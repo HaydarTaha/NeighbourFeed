@@ -5,5 +5,8 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
+    <string name="create_a_new_post">Create a New Post</string>
+    <string name="filter">Filter</string>
+    <string name="profile">Profile</string>
 
 </resources>
