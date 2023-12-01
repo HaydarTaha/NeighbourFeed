@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("MainActivity", "Profile button clicked");
-                //openProfile();
+                openProfile();
             }
         });
 
@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openProfile() {
-        //Intent intent = new Intent(this, ProfileActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, UserProfile.class);
+        startActivity(intent);
     }
 
     @SuppressLint({"SetTextI18n", "RtlHardcoded"})
