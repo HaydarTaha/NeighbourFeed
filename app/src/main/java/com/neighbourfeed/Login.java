@@ -29,16 +29,17 @@ public class Login extends AppCompatActivity {
     ProgressBar progressBar;
     TextView goToRegister;
 
-   /* @Override
+   @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        // if user go to MainActivity directly
         if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(),Login.class);
+            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
             finish();
         }
-    }*/
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
