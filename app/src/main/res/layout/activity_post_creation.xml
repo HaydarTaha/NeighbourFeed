@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:padding="15dp"
+        android:id="@+id/btnSelectImageCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Image"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"/>
+
+    <Button
+        android:padding="15dp"
+
+        android:id="@+id/btnSelectFromGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select from Gallery"
+        android:layout_toEndOf="@id/btnSelectImageCamera"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"/>
+
+    <EditText
+        android:id="@+id/editTextPostText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnSelectImageCamera"
+        android:layout_marginStart="16dp"
+        android:padding="15dp"
+        android:layout_marginEnd="16dp"
+        android:hint="Enter text for your post" />
+
+    <Spinner
+        android:id="@+id/spinnerPostType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextPostText"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:padding="15dp"
+        />
+
+    <Button
+        android:id="@+id/btnAddPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Post"
+
+        android:layout_below="@id/spinnerPostType"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:padding="15dp"
+        />
+
+</RelativeLayout>

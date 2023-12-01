@@ -13,11 +13,11 @@
         android:theme="@style/Theme.NeighbourFeed"
         tools:targetApi="31">
         <activity
-            android:name=".CreatePost"
+            android:name=".PostCreation"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".Register"
             android:exported="false" />
