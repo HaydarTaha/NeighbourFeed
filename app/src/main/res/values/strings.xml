@@ -8,5 +8,7 @@
     <string name="create_a_new_post">Create a New Post</string>
     <string name="filter">Filter</string>
     <string name="profile">Profile</string>
+    <string name="distance_seekbar">Distance SeekBar</string>
+    <string name="km">%d km</string>
 
 </resources>

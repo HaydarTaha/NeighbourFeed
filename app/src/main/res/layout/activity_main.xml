@@ -12,8 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:textAppearance="@style/HeaderText"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"/>
 
@@ -36,7 +35,11 @@
             android:background="@drawable/circle_background"
             android:src="@drawable/ic_profile"
             android:layout_weight="1"
-            android:contentDescription="@string/profile"/>
+            android:contentDescription="@string/profile"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:stateListAnimator="@null"
+            android:focusable="true" />
 
         <!-- Filter Button -->
         <ImageButton
@@ -46,7 +49,11 @@
             android:background="@drawable/circle_background"
             android:src="@drawable/ic_filter"
             android:layout_weight="1"
-            android:contentDescription="@string/filter"/>
+            android:contentDescription="@string/filter"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:stateListAnimator="@null"
+            android:focusable="true" />
 
         <!-- Create Post Button -->
         <ImageButton
@@ -56,7 +63,11 @@
             android:background="@drawable/circle_background"
             android:src="@drawable/ic_post"
             android:layout_weight="1"
-            android:contentDescription="@string/create_a_new_post"/>
+            android:contentDescription="@string/create_a_new_post"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:stateListAnimator="@null"
+            android:focusable="true" />
 
     </LinearLayout>
 </RelativeLayout>
