@@ -1,0 +1,115 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- User Information and User Icon -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:orientation="horizontal">
+
+        <!-- User Icon -->
+        <ImageButton
+            android:id="@+id/iconUser"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_profile"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/profile" />
+
+        <!-- Username and Distance -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/username"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/km"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Post Text -->
+    <TextView
+        android:id="@+id/textPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/this_is_a_post_text"
+        android:textSize="24sp"
+        android:textStyle="normal" />
+
+    <!-- Post Image -->
+    <ImageView
+        android:id="@+id/imagePost"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/post_image" />
+
+    <!-- Comment, Like, and Dislike Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start|center_vertical">
+
+        <!-- Comment Icon -->
+        <ImageButton
+            android:id="@+id/iconComment"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_comment"
+            android:layout_marginEnd="8dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/comment" />
+
+        <!-- Like and Dislike Icons -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end">
+
+            <!-- Like Icon -->
+            <ImageButton
+                android:id="@+id/iconLike"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/arrow_up_bold_outline"
+                android:contentDescription="@string/like" />
+
+            <!-- Dislike Icon -->
+            <ImageButton
+                android:id="@+id/iconDislike"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/arrow_down_bold_outline"
+                android:contentDescription="@string/dislike" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

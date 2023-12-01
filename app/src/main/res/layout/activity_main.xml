@@ -17,6 +17,14 @@
         android:layout_marginBottom="16dp"/>
 
     <!-- Body (Post List) -->
+    <ListView
+        android:id="@+id/postListView"
+        android:layout_width="wrap_content"
+        android:layout_height="632dp"
+        android:layout_above="@id/footerLayout"
+        android:layout_below="@id/headerTextView"
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
     <!-- Footer -->
     <LinearLayout
@@ -24,14 +32,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
+        android:orientation="horizontal">
 
         <!-- Profile Button -->
         <ImageButton
             android:id="@+id/profileButton"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:background="@drawable/circle_background"
             android:src="@drawable/ic_profile"
             android:layout_weight="1"
@@ -44,8 +51,8 @@
         <!-- Filter Button -->
         <ImageButton
             android:id="@+id/filterButton"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:background="@drawable/circle_background"
             android:src="@drawable/ic_filter"
             android:layout_weight="1"
@@ -58,8 +65,8 @@
         <!-- Create Post Button -->
         <ImageButton
             android:id="@+id/createPostButton"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:background="@drawable/circle_background"
             android:src="@drawable/ic_post"
             android:layout_weight="1"

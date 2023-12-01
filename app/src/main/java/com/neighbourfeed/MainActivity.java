@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
                 //openCreatePost();
             }
         });
+
+        showPosts();
     }
 
     private void openProfile() {
@@ -168,6 +171,28 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void showPosts() {
+        ListView listView = findViewById(R.id.postListView);
+
+        ArrayList<Post> posts = new ArrayList<>();
+        posts.add(new Post("John Doe", "1.2 km", "Content 1"));
+        posts.add(new Post("Jane Doe", "1.5 km", "Content 2"));
+        posts.add(new Post("John Doe", "1.2 km", "Content 3"));
+        posts.add(new Post("Jane Doe", "1.5 km", "Content 4"));
+        posts.add(new Post("John Doe", "1.2 km", "Content 5"));
+        posts.add(new Post("Jane Doe", "1.5 km", "Content 6"));
+        posts.add(new Post("John Doe", "1.2 km", "Content 7"));
+        posts.add(new Post("Jane Doe", "1.5 km", "Content 8"));
+        posts.add(new Post("John Doe", "1.2 km", "Content 9"));
+        posts.add(new Post("Jane Doe", "1.5 km", "Content 10"));
+        posts.add(new Post("John Doe", "1.2 km", "Content 11"));
+        posts.add(new Post("Jane Doe", "1.5 km", "Content 12"));
+        posts.add(new Post("John Doe", "1.2 km", "Content 13"));
+        posts.add(new Post("Jane Doe", "1.5 km", "Content 14"));
+
+        PostAdapter adapter = new PostAdapter(this, posts);
+        listView.setAdapter(adapter);
+    }
 
     private void openCreatePost() {
         //Intent intent = new Intent(this, CreatePostActivity.class);

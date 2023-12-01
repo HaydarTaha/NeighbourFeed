@@ -12,5 +12,10 @@
     <string name="profile">Profile</string>
     <string name="distance_seekbar">Distance</string>
     <string name="km">%d km</string>
+    <string name="this_is_a_post_text">This is a post text</string>
+    <string name="post_image">Post Image</string>
+    <string name="like">Like</string>
+    <string name="dislike">Dislike</string>
+    <string name="comment">Comment</string>
 
 </resources>
