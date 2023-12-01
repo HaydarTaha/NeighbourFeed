@@ -3,6 +3,7 @@ package com.neighbourfeed;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("MainActivity", "Profile button clicked");
-                //openProfile();
+                openProfile();
             }
         });
 
@@ -55,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("MainActivity", "Create post button clicked");
-                //openCreatePost();
+                openCreatePost();
+
             }
         });
 
@@ -63,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openProfile() {
-        //Intent intent = new Intent(this, ProfileActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, UserProfile.class);
+        startActivity(intent);
     }
 
     @SuppressLint({"SetTextI18n", "RtlHardcoded"})
@@ -195,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openCreatePost() {
-        //Intent intent = new Intent(this, CreatePostActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, PostCreation.class);
+        startActivity(intent);
     }
 }
