@@ -11,11 +11,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 
+import java.util.Objects;
+
 public class UserProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         MaterialButtonToggleGroup toggleGroup = findViewById(R.id.toggleGroup);
         TextView textViewDisplay = findViewById(R.id.textViewDisplay);
