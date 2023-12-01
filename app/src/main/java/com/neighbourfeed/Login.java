@@ -49,6 +49,8 @@ public class Login extends AppCompatActivity {
         editTextPassword=findViewById(R.id.password);
         buttonLog=findViewById(R.id.btn_login);
 
+        editTextPassword.setInputType(129);
+
         mAuth=FirebaseAuth.getInstance();
 
         progressBar=findViewById(R.id.progressBar);

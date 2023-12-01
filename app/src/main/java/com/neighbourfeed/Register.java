@@ -20,12 +20,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
 public class Register extends AppCompatActivity {
     TextInputEditText editTextMail, editTextPassword;
     Button buttonReg;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
-    TextView textView;
+    TextView goToLogin;
     @Override
     public void onStart() {
         super.onStart();
@@ -40,15 +42,17 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        Objects.requireNonNull(getSupportActionBar()).hide();
         editTextMail=findViewById(R.id.email_register);
         editTextPassword=findViewById(R.id.password_register);
         buttonReg=findViewById(R.id.btn_register);
         mAuth=FirebaseAuth.getInstance();
         progressBar=findViewById(R.id.progressBar_register);
-        textView=findViewById(R.id.loginNow);
+        goToLogin=findViewById(R.id.loginNow);
 
-        textView.setOnClickListener(new View.OnClickListener() {
+        editTextPassword.setInputType(129);
+
+        goToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),Login.class);
