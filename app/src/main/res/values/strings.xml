@@ -17,5 +17,7 @@
     <string name="like">Like</string>
     <string name="dislike">Dislike</string>
     <string name="comment">Comment</string>
+    <string name="comment_count">0</string>
+    <string name="total_count">0</string>
 
 </resources>

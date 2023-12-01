@@ -177,27 +177,29 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.postListView);
 
         ArrayList<Post> posts = new ArrayList<>();
-        posts.add(new Post("John Doe", "1.2 km", "Content 1"));
-        posts.add(new Post("Jane Doe", "1.5 km", "Content 2"));
-        posts.add(new Post("John Doe", "1.2 km", "Content 3"));
-        posts.add(new Post("Jane Doe", "1.5 km", "Content 4"));
-        posts.add(new Post("John Doe", "1.2 km", "Content 5"));
-        posts.add(new Post("Jane Doe", "1.5 km", "Content 6"));
-        posts.add(new Post("John Doe", "1.2 km", "Content 7"));
-        posts.add(new Post("Jane Doe", "1.5 km", "Content 8"));
-        posts.add(new Post("John Doe", "1.2 km", "Content 9"));
-        posts.add(new Post("Jane Doe", "1.5 km", "Content 10"));
-        posts.add(new Post("John Doe", "1.2 km", "Content 11"));
-        posts.add(new Post("Jane Doe", "1.5 km", "Content 12"));
-        posts.add(new Post("John Doe", "1.2 km", "Content 13"));
-        posts.add(new Post("Jane Doe", "1.5 km", "Content 14"));
+        posts.add(new Post("John Doe", "1.2 km", "Content 1",10, 2, 3));
+        posts.add(new Post("Jane Doe", "1.2 km", "Content 2",10, 2, 3));
+        posts.add(new Post("John Doe", "1.2 km", "Content 3",10, 2, 3));
+        posts.add(new Post("Jane Doe", "1.2 km", "Content 4",10, 2, 3));
+        posts.add(new Post("John Doe", "1.2 km", "Content 5",10, 2, 3));
+        posts.add(new Post("Jane Doe", "1.2 km", "Content 6",10, 2, 3));
+        posts.add(new Post("John Doe", "1.2 km", "Content 7",10, 2, 3));
+        posts.add(new Post("Jane Doe", "1.2 km", "Content 8",10, 2, 3));
+        posts.add(new Post("John Doe", "1.2 km", "Content 9",10, 2, 3));
+        posts.add(new Post("Jane Doe", "1.2 km", "Content 10",10, 2, 3));
+        posts.add(new Post("John Doe", "1.2 km", "Content 11",10, 2, 3));
+        posts.add(new Post("Jane Doe", "1.2 km", "Content 12",10, 2, 3));
+        posts.add(new Post("John Doe", "1.2 km", "Content 13",10, 2, 3));
+        posts.add(new Post("Jane Doe", "1.2 km", "Content 14",10, 2, 3));
+        posts.add(new Post("John Doe", "1.2 km", "Content 15",10, 2, 3));
+        posts.add(new Post("Jane Doe", "1.2 km", "Content 16",10, 2, 3));
 
         PostAdapter adapter = new PostAdapter(this, posts);
         listView.setAdapter(adapter);
     }
 
     private void openCreatePost() {
-        Intent intent = new Intent(this, PostCreation.class);
+        Intent intent = new Intent(this, CreatePost.class);
         startActivity(intent);
     }
 }

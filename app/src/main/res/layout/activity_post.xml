@@ -73,43 +73,75 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="start|center_vertical">
+        android:gravity="start|center_vertical"
+        android:baselineAligned="false">
 
-        <!-- Comment Icon -->
-        <ImageButton
-            android:id="@+id/iconComment"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_comment"
-            android:layout_marginEnd="8dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="@string/comment" />
+        <!-- Comment LinearLayout -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Comment Icon -->
+            <ImageButton
+                android:id="@+id/iconComment"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_comment"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="@string/comment" />
 
-        <!-- Like and Dislike Icons -->
+            <!-- Comment Count -->
+            <TextView
+                android:id="@+id/textCommentCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/comment_count"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+
+        <!-- Like, Dislike and total like and dislike count LinearLayout -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end">
 
-            <!-- Like Icon -->
-            <ImageButton
-                android:id="@+id/iconLike"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="8dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:src="@drawable/arrow_up_bold_outline"
-                android:contentDescription="@string/like" />
+            <!-- Like and Dislike Total Count -->
+            <TextView
+                android:id="@+id/totalLikeDislikeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_count"
+                android:textSize="20sp"
+                android:layout_marginEnd="8dp" />
 
-            <!-- Dislike Icon -->
-            <ImageButton
-                android:id="@+id/iconDislike"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:src="@drawable/arrow_down_bold_outline"
-                android:contentDescription="@string/dislike" />
+            <!-- Icon LinearLayout -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Like Icon -->
+                <ImageButton
+                    android:id="@+id/iconLike"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:src="@drawable/arrow_up_bold_outline"
+                    android:contentDescription="@string/like" />
+
+                <!-- Dislike Icon -->
+                <ImageButton
+                    android:id="@+id/iconDislike"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:src="@drawable/arrow_down_bold_outline"
+                    android:contentDescription="@string/dislike" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

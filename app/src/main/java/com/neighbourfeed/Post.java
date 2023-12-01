@@ -10,18 +10,27 @@ public class Post {
     private String distanceFromUser;
     private String postContent;
     private int postImage;
+    private int likeCount;
+    private int dislikeCount;
+    private int commentCount;
 
-    public Post(String userName, String distanceFromUser, String postContent) {
+    public Post(String userName, String distanceFromUser, String postContent, int likeCount, int dislikeCount, int commentCount) {
         this.userName = userName;
         this.distanceFromUser = distanceFromUser;
         this.postContent = postContent;
+        this.likeCount = likeCount;
+        this.dislikeCount = dislikeCount;
+        this.commentCount = commentCount;
     }
 
-    public Post(String userName, String distanceFromUser, String postContent, int postImage) {
+    public Post(String userName, String distanceFromUser, String postContent, int postImage, int likeCount, int dislikeCount, int commentCount) {
         this.userName = userName;
         this.distanceFromUser = distanceFromUser;
         this.postContent = postContent;
         this.postImage = postImage;
+        this.likeCount = likeCount;
+        this.dislikeCount = dislikeCount;
+        this.commentCount = commentCount;
     }
 
     public String getUserName() {
@@ -40,6 +49,18 @@ public class Post {
         return postImage;
     }
 
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -54,6 +75,18 @@ public class Post {
 
     public void setPostImage(int postImage) {
         this.postImage = postImage;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
     @NonNull
