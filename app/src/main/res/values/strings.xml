@@ -7,5 +7,10 @@
     <string name="username">Username</string>
     <string name="click_to_register">Click to Register</string>
     <string name="click_to_login">Click to Login</string>
+    <string name="filter">Filter</string>
+    <string name="create_a_new_post">Create a new post</string>
+    <string name="profile">Profile</string>
+    <string name="distance_seekbar">Distance</string>
+    <string name="km">%d km</string>
 
 </resources>
