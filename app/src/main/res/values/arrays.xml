@@ -2,15 +2,12 @@
 
     <string-array name="filter_types">
         <item>General</item>
-        <item>Food</item>
+        <item>Technology</item>
         <item>Shopping</item>
-        <item>Transport</item>
-        <item>Entertainment</item>
+        <item>Food</item>
         <item>Health</item>
         <item>Education</item>
         <item>Finance</item>
-        <item>Religion</item>
-        <item>Government</item>
         <item>Other</item>
     </string-array>
 

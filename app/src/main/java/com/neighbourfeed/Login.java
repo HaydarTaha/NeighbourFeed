@@ -19,15 +19,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
 public class Login extends AppCompatActivity {
 
     TextInputEditText editTextMail, editTextPassword;
     Button buttonLog;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
-    TextView textView;
+    TextView goToRegister;
 
-    @Override
+   /* @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -36,13 +38,13 @@ public class Login extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        Objects.requireNonNull(getSupportActionBar()).hide();
         editTextMail=findViewById(R.id.email);
         editTextPassword=findViewById(R.id.password);
         buttonLog=findViewById(R.id.btn_login);
@@ -50,17 +52,15 @@ public class Login extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
 
         progressBar=findViewById(R.id.progressBar);
-        textView=findViewById(R.id.registerNow);
-        textView.setOnClickListener(new View.OnClickListener() {
+        goToRegister=findViewById(R.id.registerNow);
+        goToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),Register.class);
+                Intent intent = new Intent(getApplicationContext(), Register.class);
                 startActivity(intent);
                 finish();
             }
         });
-
-
         buttonLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +77,6 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Enter Password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -85,19 +84,15 @@ public class Login extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     Toast.makeText(Login.this, "Login successful", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();
                                 } else {
-
                                     Toast.makeText(Login.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
-
                                 }
                             }
                         });
-
-
             }
         });
     }
