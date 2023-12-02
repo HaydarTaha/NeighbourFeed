@@ -19,5 +19,9 @@
     <string name="comment">Comment</string>
     <string name="comment_count">0</string>
     <string name="total_count">0</string>
+    <string name="downs">-</string>
+    <string name="ups">+</string>
+    <string name="comments">Comments</string>
+    <string name="posts">Posts</string>
 
 </resources>
