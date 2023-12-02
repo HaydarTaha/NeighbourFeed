@@ -177,25 +177,18 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.postListView);
 
         ArrayList<Post> posts = new ArrayList<>();
-        posts.add(new Post("John Doe", "1.2 km", "Content 1",10, 2, 3));
-        posts.add(new Post("Jane Doe", "1.2 km", "Content 2",10, 2, 3));
-        posts.add(new Post("John Doe", "1.2 km", "Content 3",10, 2, 3));
-        posts.add(new Post("Jane Doe", "1.2 km", "Content 4",10, 2, 3));
-        posts.add(new Post("John Doe", "1.2 km", "Content 5",10, 2, 3));
-        posts.add(new Post("Jane Doe", "1.2 km", "Content 6",10, 2, 3));
-        posts.add(new Post("John Doe", "1.2 km", "Content 7",10, 2, 3));
-        posts.add(new Post("Jane Doe", "1.2 km", "Content 8",10, 2, 3));
-        posts.add(new Post("John Doe", "1.2 km", "Content 9",10, 2, 3));
-        posts.add(new Post("Jane Doe", "1.2 km", "Content 10",10, 2, 3));
-        posts.add(new Post("John Doe", "1.2 km", "Content 11",10, 2, 3));
-        posts.add(new Post("Jane Doe", "1.2 km", "Content 12",10, 2, 3));
-        posts.add(new Post("John Doe", "1.2 km", "Content 13",10, 2, 3));
-        posts.add(new Post("Jane Doe", "1.2 km", "Content 14",10, 2, 3));
-        posts.add(new Post("John Doe", "1.2 km", "Content 15",10, 2, 3));
-        posts.add(new Post("Jane Doe", "1.2 km", "Content 16",10, 2, 3));
-
+        fetchPosts(posts);
         PostAdapter adapter = new PostAdapter(this, posts);
         listView.setAdapter(adapter);
+    }
+
+    private void fetchPosts(ArrayList<Post> posts) {
+        //TODO: Fetch posts from firebase database
+        posts.add(new Post("John Doe", "1 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 10, 5, 2, "Food", true, false));
+        posts.add(new Post("Jane Doe", "2 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 5, 10, 3, "Food", false, true));
+        posts.add(new Post("John Doe", "1 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 10, 5, 2, "Food", true, false));
+        posts.add(new Post("Jane Doe", "2 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 5, 10, 3, "Food", false, true));
+        posts.add(new Post("John Doe", "1 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 10, 5, 2, "Food", true, false));
     }
 
     private void openCreatePost() {

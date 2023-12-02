@@ -68,7 +68,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/post_image" />
 
-    <!-- Comment, Like, and Dislike Buttons -->
+    <!-- Comment, Up Vote and Down Vote -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -101,14 +101,14 @@
         </LinearLayout>
 
 
-        <!-- Like, Dislike and total like and dislike count LinearLayout -->
+        <!-- Up Vote, Down Vote and total count LinearLayout -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end">
 
-            <!-- Like and Dislike Total Count -->
+            <!-- Total Count -->
             <TextView
                 android:id="@+id/totalLikeDislikeCount"
                 android:layout_width="wrap_content"
@@ -123,9 +123,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <!-- Like Icon -->
+                <!-- Up Vote Icon -->
                 <ImageButton
-                    android:id="@+id/iconLike"
+                    android:id="@+id/upVoteIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginEnd="8dp"
@@ -133,9 +133,9 @@
                     android:src="@drawable/arrow_up_bold_outline"
                     android:contentDescription="@string/like" />
 
-                <!-- Dislike Icon -->
+                <!-- Down Vote Icon -->
                 <ImageButton
-                    android:id="@+id/iconDislike"
+                    android:id="@+id/downVoteIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="?android:attr/selectableItemBackground"

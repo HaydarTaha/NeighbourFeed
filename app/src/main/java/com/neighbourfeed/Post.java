@@ -10,27 +10,36 @@ public class Post {
     private String distanceFromUser;
     private String postContent;
     private int postImage;
-    private int likeCount;
-    private int dislikeCount;
+    private int upVoteCount;
+    private int downVoteCount;
     private int commentCount;
+    private String type;
+    private boolean isUpVotedByUser;
+    private boolean isDownVotedByUser;
 
-    public Post(String userName, String distanceFromUser, String postContent, int likeCount, int dislikeCount, int commentCount) {
+    public Post(String userName, String distanceFromUser, String postContent, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser) {
         this.userName = userName;
         this.distanceFromUser = distanceFromUser;
         this.postContent = postContent;
-        this.likeCount = likeCount;
-        this.dislikeCount = dislikeCount;
+        this.upVoteCount = upVoteCount;
+        this.downVoteCount = downVoteCount;
         this.commentCount = commentCount;
+        this.type = type;
+        this.isUpVotedByUser = isUpVotedByUser;
+        this.isDownVotedByUser = isDownVotedByUser;
     }
 
-    public Post(String userName, String distanceFromUser, String postContent, int postImage, int likeCount, int dislikeCount, int commentCount) {
+    public Post(String userName, String distanceFromUser, String postContent, int postImage, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser) {
         this.userName = userName;
         this.distanceFromUser = distanceFromUser;
         this.postContent = postContent;
         this.postImage = postImage;
-        this.likeCount = likeCount;
-        this.dislikeCount = dislikeCount;
+        this.upVoteCount = upVoteCount;
+        this.downVoteCount = downVoteCount;
         this.commentCount = commentCount;
+        this.type = type;
+        this.isUpVotedByUser = isUpVotedByUser;
+        this.isDownVotedByUser = isDownVotedByUser;
     }
 
     public String getUserName() {
@@ -49,16 +58,28 @@ public class Post {
         return postImage;
     }
 
-    public int getLikeCount() {
-        return likeCount;
+    public int getUpVoteCount() {
+        return upVoteCount;
     }
 
-    public int getDislikeCount() {
-        return dislikeCount;
+    public int getDownVoteCount() {
+        return downVoteCount;
     }
 
     public int getCommentCount() {
         return commentCount;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public boolean isUpVotedByUser() {
+        return isUpVotedByUser;
+    }
+
+    public boolean isDownVotedByUser() {
+        return isDownVotedByUser;
     }
 
     public void setUserName(String userName) {
@@ -77,16 +98,44 @@ public class Post {
         this.postImage = postImage;
     }
 
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+    public void setUpVoteCount(int upVoteCount) {
+        this.upVoteCount = upVoteCount;
     }
 
-    public void setDislikeCount(int dislikeCount) {
-        this.dislikeCount = dislikeCount;
+    public void setDownVoteCount(int downVoteCount) {
+        this.downVoteCount = downVoteCount;
     }
 
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setUpVotedByUser(boolean upVotedByUser) {
+        isUpVotedByUser = upVotedByUser;
+    }
+
+    public void setDownVotedByUser(boolean downVotedByUser) {
+        isDownVotedByUser = downVotedByUser;
+    }
+
+    public void incrementUpVoteCount() {
+        this.upVoteCount++;
+    }
+
+    public void decrementUpVoteCount() {
+        this.upVoteCount--;
+    }
+
+    public void incrementDownVoteCount() {
+        this.downVoteCount++;
+    }
+
+    public void decrementDownVoteCount() {
+        this.downVoteCount--;
     }
 
     @NonNull
@@ -97,6 +146,10 @@ public class Post {
                 ", distanceFromUser='" + distanceFromUser + '\'' +
                 ", postContent='" + postContent + '\'' +
                 ", postImage=" + postImage +
+                ", upVoteCount=" + upVoteCount +
+                ", downVoteCount=" + downVoteCount +
+                ", commentCount=" + commentCount +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

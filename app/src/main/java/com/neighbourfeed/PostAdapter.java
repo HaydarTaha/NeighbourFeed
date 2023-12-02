@@ -1,7 +1,6 @@
 package com.neighbourfeed;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,18 +8,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class PostAdapter extends ArrayAdapter<Post> {
-
-    private boolean isLiked;
-    private boolean isDisliked;
 
     public PostAdapter(Context context, ArrayList<Post> posts) {
         super(context, 0, posts);
@@ -36,107 +30,79 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
         Post currentPost = getItem(position);
 
-        //TODO: Get like and dislike status from database for current user but for now it is false
-        isLiked = false;
-        isDisliked = false;
-
         TextView textUsername = listItemView.findViewById(R.id.textUsername);
         TextView textDistance = listItemView.findViewById(R.id.textDistance);
         TextView textPost = listItemView.findViewById(R.id.textPost);
         ImageView imagePost = listItemView.findViewById(R.id.imagePost);
-        ImageButton likeButton = listItemView.findViewById(R.id.iconLike);
-        ImageButton dislikeButton = listItemView.findViewById(R.id.iconDislike);
+        ImageButton upVoteButton = listItemView.findViewById(R.id.upVoteIcon);
+        ImageButton downVoteButton = listItemView.findViewById(R.id.downVoteIcon);
         ImageButton commentButton = listItemView.findViewById(R.id.iconComment);
         TextView commentCount = listItemView.findViewById(R.id.textCommentCount);
         TextView totalLikes = listItemView.findViewById(R.id.totalLikeDislikeCount);
 
-        //Update icon src for like button
-        if (isLiked) {
-            likeButton.setImageResource(R.drawable.arrow_up_bold);
-        } else {
-            likeButton.setImageResource(R.drawable.arrow_up_bold_outline);
-        }
+        //Set upVote and downVote icon
+        assert currentPost != null;
+        upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
+        downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
 
-        //Update icon src for dislike button
-        if (isDisliked) {
-            dislikeButton.setImageResource(R.drawable.arrow_down_bold);
-        } else {
-            dislikeButton.setImageResource(R.drawable.arrow_down_bold_outline);
-        }
+        textUsername.setText(currentPost.getUserName());
+        textDistance.setText(currentPost.getDistanceFromUser());
+        textPost.setText(currentPost.getPostContent());
+        imagePost.setImageResource(currentPost.getPostImage());
+        commentCount.setText(String.valueOf(currentPost.getCommentCount()));
+        calculateTotalVotes(currentPost, totalLikes);
 
-        if (currentPost != null) {
-            textUsername.setText(currentPost.getUserName());
-            textDistance.setText(currentPost.getDistanceFromUser());
-            textPost.setText(currentPost.getPostContent());
-            imagePost.setImageResource(currentPost.getPostImage());
-            commentCount.setText(String.valueOf(currentPost.getCommentCount()));
-            totalLikes.setText(String.valueOf(currentPost.getLikeCount() - currentPost.getDislikeCount()));
-        }
-
-        likeButton.setOnClickListener(new View.OnClickListener() {
+        upVoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isLike = true;
-                //Control if user already liked or disliked
-                if (isLiked && !isDisliked) {
-                    isLiked = false;
-                    //Update icon src
-                    likeButton.setImageResource(R.drawable.arrow_up_bold_outline);
-
-                    assert currentPost != null;
-                    int newLikeCount = currentPost.getLikeCount() - 1;
-                    currentPost.setLikeCount(newLikeCount);
-
-                    updateTotalLikeCount(currentPost, totalLikes);
-
-                    //TODO: Update database
-                } else if (!isLiked && isDisliked) {
-                    Toast.makeText(getContext(), "You can't like and dislike at the same time", Toast.LENGTH_SHORT).show();
-                } else if (!isLiked && !isDisliked) {
-                    isLiked = true;
-                    //Update icon src
-                    likeButton.setImageResource(R.drawable.arrow_up_bold);
-
-                    assert currentPost != null;
-                    int newLikeCount = currentPost.getLikeCount() + 1;
-                    currentPost.setLikeCount(newLikeCount);
-
-                    updateTotalLikeCount(currentPost, totalLikes);
-
-                    //TODO: Update database
+                if (currentPost.isUpVotedByUser()) {
+                    currentPost.decrementUpVoteCount();
+                    currentPost.setUpVotedByUser(false);
+                } else {
+                    if (currentPost.isDownVotedByUser()) {
+                        currentPost.incrementUpVoteCount();
+                        currentPost.decrementDownVoteCount();
+                        currentPost.setUpVotedByUser(true);
+                        currentPost.setDownVotedByUser(false);
+                    } else {
+                        currentPost.incrementUpVoteCount();
+                        currentPost.setUpVotedByUser(true);
+                    }
                 }
+
+                //Update icon both upVote and downVote
+                upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
+                downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
+
+                calculateTotalVotes(currentPost, totalLikes);
+                notifyDataSetChanged();
             }
         });
 
-
-        dislikeButton.setOnClickListener(new View.OnClickListener() {
+        downVoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isLike = false;
-                //Control if user already liked or disliked
-                if (!isLiked && isDisliked) {
-                    isDisliked = false;
-                    //Update icon src
-                    dislikeButton.setImageResource(R.drawable.arrow_down_bold_outline);
-
-                    assert currentPost != null;
-                    int newDislikeCount = currentPost.getDislikeCount() - 1;
-                    currentPost.setDislikeCount(newDislikeCount);
-
-                    updateTotalLikeCount(currentPost, totalLikes);
-                } else if (isLiked && !isDisliked) {
-                    Toast.makeText(getContext(), "You can't like and dislike at the same time", Toast.LENGTH_SHORT).show();
-                } else if (!isDisliked && !isLiked) {
-                    isDisliked = true;
-                    //Update icon src
-                    dislikeButton.setImageResource(R.drawable.arrow_down_bold);
-
-                    assert currentPost != null;
-                    int newDislikeCount = currentPost.getDislikeCount() + 1;
-                    currentPost.setDislikeCount(newDislikeCount);
-
-                    updateTotalLikeCount(currentPost, totalLikes);
+                if (currentPost.isDownVotedByUser()) {
+                    currentPost.decrementDownVoteCount();
+                    currentPost.setDownVotedByUser(false);
+                } else {
+                    if (currentPost.isUpVotedByUser()) {
+                        currentPost.incrementDownVoteCount();
+                        currentPost.decrementUpVoteCount();
+                        currentPost.setUpVotedByUser(false);
+                        currentPost.setDownVotedByUser(true);
+                    } else {
+                        currentPost.incrementDownVoteCount();
+                        currentPost.setDownVotedByUser(true);
+                    }
                 }
+
+                //Update icon both upVote and downVote
+                upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
+                downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
+
+                calculateTotalVotes(currentPost, totalLikes);
+                notifyDataSetChanged();
             }
         });
 
@@ -150,10 +116,35 @@ public class PostAdapter extends ArrayAdapter<Post> {
         return listItemView;
     }
 
-    private void updateTotalLikeCount(Post currentPost, TextView totalLikes) {
-        int likeCount = currentPost.getLikeCount();
-        int dislikeCount = currentPost.getDislikeCount();
-        int totalLikeCount = likeCount - dislikeCount;
-        totalLikes.setText(String.valueOf(totalLikeCount));
+    private void calculateTotalVotes(Post currentPost, TextView totalLikes) {
+        int totalVotes = currentPost.getUpVoteCount() - currentPost.getDownVoteCount();
+        totalLikes.setText(String.valueOf(totalVotes));
     }
 }
+
+/*
+if (isUpVotedByUser()) {
+                    assert currentPost != null;
+                    currentPost.decrementUpVoteCount();
+                    setUpVotedByUser(false);
+                } else {
+                    if (isDownVotedByUser()) {
+                        assert currentPost != null;
+                        currentPost.incrementUpVoteCount();
+                        currentPost.decrementDownVoteCount();
+                        setUpVotedByUser(true);
+                        setDownVotedByUser(false);
+                    } else {
+                        assert currentPost != null;
+                        currentPost.incrementUpVoteCount();
+                        setUpVotedByUser(true);
+                    }
+                }
+
+                //Update icon both upVote and downVote
+                upVoteButton.setImageResource(isUpVotedByUser ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
+                downVoteButton.setImageResource(isDownVotedByUser ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
+
+                calculateTotalVotes(currentPost, totalLikes);
+                notifyDataSetChanged();
+ */
