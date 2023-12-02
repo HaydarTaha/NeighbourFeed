@@ -24,7 +24,11 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.view.LayoutInflater;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class MainActivity extends AppCompatActivity {
+
+    FirebaseFirestore database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        database = FirebaseFirestore.getInstance();
         showPosts();
     }
 
@@ -184,11 +189,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void fetchPosts(ArrayList<Post> posts) {
         //TODO: Fetch posts from firebase database
-        posts.add(new Post("John Doe", "1 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 10, 5, 2, "Food", true, false));
-        posts.add(new Post("Jane Doe", "2 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 5, 10, 3, "Food", false, true));
-        posts.add(new Post("John Doe", "1 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 10, 5, 2, "Food", true, false));
-        posts.add(new Post("Jane Doe", "2 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 5, 10, 3, "Food", false, true));
-        posts.add(new Post("John Doe", "1 km", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 10, 5, 2, "Food", true, false));
+        database.collection("Posts")
+                .get()
+                .addOnCompleteListener(task -> {
+                    // Get top 10 posts from database if not empty and size is greater than 10
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty() && task.getResult().size() > 10) {
+                            for (int i = 0; i < 10; i++) {
+
+                            }
+                        } else {
+                            for (int i = 0; i < task.getResult().size(); i++) {
+                                String username = task.getResult().getDocuments().get(i).getString("userName");
+                                String imagePath = task.getResult().getDocuments().get(i).getString("image");
+                                String content = task.getResult().getDocuments().get(i).getString("content");
+                                String location = Objects.requireNonNull(task.getResult().getDocuments().get(i).getGeoPoint("location")).toString();
+                                String type = task.getResult().getDocuments().get(i).getString("type");
+                                String createDateTime = Objects.requireNonNull(task.getResult().getDocuments().get(i).getTimestamp("createDate")).toString();
+                            }
+                        }
+                    } else {
+                        Log.d("MainActivity", "Error getting documents: ", task.getException());
+                    }
+                });
     }
 
     private void openCreatePost() {

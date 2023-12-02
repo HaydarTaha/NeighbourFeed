@@ -3,9 +3,6 @@ package com.neighbourfeed;
 import androidx.annotation.NonNull;
 
 public class Post {
-    //Post has userName, distanceFromUser, postContent, this is TextView
-    //Post has postImage, this is ImageView
-
     private String userName;
     private String distanceFromUser;
     private String postContent;
