@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -12,19 +14,23 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
-import android.widget.ArrayAdapter;
+
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.view.LayoutInflater;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
         ImageButton profileButton = findViewById(R.id.profileButton);
         ImageButton filterButton = findViewById(R.id.filterButton);
         ImageButton createPostButton = findViewById(R.id.createPostButton);
+
+        ProgressBar progressBar = findViewById(R.id.progressBarMain);
+        progressBar.setVisibility(View.VISIBLE);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,11 +187,15 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     private void showPosts() {
         ListView listView = findViewById(R.id.postListView);
-
         ArrayList<Post> posts = new ArrayList<>();
         fetchPosts(posts);
+        if (!posts.isEmpty()) {
+            ProgressBar progressBar = findViewById(R.id.progressBarMain);
+            progressBar.setVisibility(View.GONE);
+        }
         PostAdapter adapter = new PostAdapter(this, posts);
         listView.setAdapter(adapter);
     }
@@ -196,22 +209,75 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         if (!task.getResult().isEmpty() && task.getResult().size() > 10) {
                             for (int i = 0; i < 10; i++) {
-
+                                DocumentSnapshot document = task.getResult().getDocuments().get(i);
+                                Post post = processPostData(document);
+                                Log.d("MainActivity", "Post: " + post.toString());
+                                posts.add(post);
                             }
                         } else {
                             for (int i = 0; i < task.getResult().size(); i++) {
-                                String username = task.getResult().getDocuments().get(i).getString("userName");
-                                String imagePath = task.getResult().getDocuments().get(i).getString("image");
-                                String content = task.getResult().getDocuments().get(i).getString("content");
-                                String location = Objects.requireNonNull(task.getResult().getDocuments().get(i).getGeoPoint("location")).toString();
-                                String type = task.getResult().getDocuments().get(i).getString("type");
-                                String createDateTime = Objects.requireNonNull(task.getResult().getDocuments().get(i).getTimestamp("createDate")).toString();
+                                DocumentSnapshot document = task.getResult().getDocuments().get(i);
+                                Post post = processPostData(document);
+                                Log.d("MainActivity", "Post: " + post.toString());
+                                posts.add(post);
                             }
+                        }
+                        //After fetching posts, update the list view in the UI
+                        if (!posts.isEmpty()) {
+                            ProgressBar progressBar = findViewById(R.id.progressBarMain);
+                            progressBar.setVisibility(View.GONE);
+                            PostAdapter adapter = new PostAdapter(this, posts);
+                            ListView listView = findViewById(R.id.postListView);
+                            listView.setAdapter(adapter);
                         }
                     } else {
                         Log.d("MainActivity", "Error getting documents: ", task.getException());
                     }
                 });
+    }
+
+    private Post processPostData(DocumentSnapshot document) {
+        String content = document.getString("content");
+        String createDate = Objects.requireNonNull(document.getTimestamp("createDate")).toString();
+        List<String> downVotedUsers = castObjectToList(document.get("downVotedUsers"));
+        String imagePath = document.getString("imagePath");
+        String location = Objects.requireNonNull(document.getGeoPoint("location")).toString();
+        String type = document.getString("type");
+        List<String> upVotedUsers = castObjectToList(document.get("upVotedUsers"));
+        String userName = document.getString("userName");
+
+        int upVotes = upVotedUsers.size();
+        int downVotes = downVotedUsers.size();
+
+        //TODO: Calculate distance from user
+        double distance = 0.0;
+        //calculateDistanceFromUser(location);
+        distance = Math.round(distance * 10.0) / 10.0;
+        String distanceString = Double.toString(distance);
+
+        //TODO: Check if user has upVoted or downVoted
+        boolean hasUpVoted = false;
+        boolean hasDownVoted = false;
+
+        //TODO: Check the commentCount
+        int commentCount = 0;
+
+        assert imagePath != null;
+        if (imagePath.equals("imagePath")) {
+            return new Post(userName, distanceString, content, upVotes, downVotes, commentCount, type, hasUpVoted, hasDownVoted);
+        } else {
+            return new Post(userName, distanceString, content, imagePath, upVotes, downVotes, commentCount, type, hasUpVoted, hasDownVoted);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> List<T> castObjectToList(Object object) {
+        if (object instanceof List<?>) {
+            return (List<T>) object;
+        } else {
+            // Handle the case where the object is not a List (or is null)
+            return new ArrayList<>();
+        }
     }
 
     private void openCreatePost() {

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PostAdapter extends ArrayAdapter<Post> {
 
@@ -44,11 +45,10 @@ public class PostAdapter extends ArrayAdapter<Post> {
         assert currentPost != null;
         upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
         downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
-
+        getImage(currentPost.getImagePath(), imagePost);
         textUsername.setText(currentPost.getUserName());
         textDistance.setText(currentPost.getDistanceFromUser());
         textPost.setText(currentPost.getPostContent());
-        imagePost.setImageResource(currentPost.getPostImage());
         commentCount.setText(String.valueOf(currentPost.getCommentCount()));
         calculateTotalVotes(currentPost, totalLikes);
 
@@ -120,31 +120,12 @@ public class PostAdapter extends ArrayAdapter<Post> {
         int totalVotes = currentPost.getUpVoteCount() - currentPost.getDownVoteCount();
         totalLikes.setText(String.valueOf(totalVotes));
     }
+
+    private void getImage(String url, ImageView imagePost) {
+        if (!Objects.equals(url, "image")) {
+            //TODO: Get image from url
+        } else {
+            imagePost.setVisibility(View.GONE);
+        }
+    }
 }
-
-/*
-if (isUpVotedByUser()) {
-                    assert currentPost != null;
-                    currentPost.decrementUpVoteCount();
-                    setUpVotedByUser(false);
-                } else {
-                    if (isDownVotedByUser()) {
-                        assert currentPost != null;
-                        currentPost.incrementUpVoteCount();
-                        currentPost.decrementDownVoteCount();
-                        setUpVotedByUser(true);
-                        setDownVotedByUser(false);
-                    } else {
-                        assert currentPost != null;
-                        currentPost.incrementUpVoteCount();
-                        setUpVotedByUser(true);
-                    }
-                }
-
-                //Update icon both upVote and downVote
-                upVoteButton.setImageResource(isUpVotedByUser ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
-                downVoteButton.setImageResource(isDownVotedByUser ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
-
-                calculateTotalVotes(currentPost, totalLikes);
-                notifyDataSetChanged();
- */

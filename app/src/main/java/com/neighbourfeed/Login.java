@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -18,6 +19,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 
 import java.util.Objects;
 
@@ -29,13 +31,30 @@ public class Login extends AppCompatActivity {
     ProgressBar progressBar;
     TextView goToRegister;
 
-   @Override
+    @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        String uid = null;
+        String email = null;
         // if user go to MainActivity directly
-        if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        if (currentUser != null) {
+            for (UserInfo profile : currentUser.getProviderData()) {
+                String providerId = profile.getProviderId();
+                if (providerId.equals("password")) {
+                    continue;
+                } else {
+                    email = profile.getEmail();
+                    uid = profile.getUid();
+                }
+            }
+            //Find userName with uid
+            //findUserName(uid);
+            //Passing data to MainActivity
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("uid", uid);
+            //intent.putExtra("name", userName);
+            intent.putExtra("email", email);
             startActivity(intent);
             finish();
         }
@@ -46,16 +65,16 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Objects.requireNonNull(getSupportActionBar()).hide();
-        editTextMail=findViewById(R.id.email);
-        editTextPassword=findViewById(R.id.password);
-        buttonLog=findViewById(R.id.btn_login);
+        editTextMail = findViewById(R.id.email);
+        editTextPassword = findViewById(R.id.password);
+        buttonLog = findViewById(R.id.btn_login);
 
         editTextPassword.setInputType(129);
 
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
-        progressBar=findViewById(R.id.progressBar);
-        goToRegister=findViewById(R.id.registerNow);
+        progressBar = findViewById(R.id.progressBar);
+        goToRegister = findViewById(R.id.registerNow);
         goToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +90,7 @@ public class Login extends AppCompatActivity {
                 String email, password;
                 email = String.valueOf(editTextMail.getText());
                 password = String.valueOf(editTextPassword.getText());
+                boolean isEmail = email.contains("@");
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(Login.this, "Enter Your Mail!", Toast.LENGTH_SHORT).show();
@@ -79,6 +99,9 @@ public class Login extends AppCompatActivity {
                 if (TextUtils.isEmpty(password)) {
                     Toast.makeText(Login.this, "Enter Password!", Toast.LENGTH_SHORT).show();
                     return;
+                }
+                if (!isEmail) {
+                    //TODO: Get email from username in database
                 }
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -91,12 +114,15 @@ public class Login extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    Toast.makeText(Login.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
             }
         });
+    }
+
+    private void findUserName(String uid) {
+
     }
 }

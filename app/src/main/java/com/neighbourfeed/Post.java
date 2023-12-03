@@ -6,7 +6,7 @@ public class Post {
     private String userName;
     private String distanceFromUser;
     private String postContent;
-    private int postImage;
+    private String imagePath;
     private int upVoteCount;
     private int downVoteCount;
     private int commentCount;
@@ -26,11 +26,11 @@ public class Post {
         this.isDownVotedByUser = isDownVotedByUser;
     }
 
-    public Post(String userName, String distanceFromUser, String postContent, int postImage, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser) {
+    public Post(String userName, String distanceFromUser, String postContent, String postImage, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser) {
         this.userName = userName;
         this.distanceFromUser = distanceFromUser;
         this.postContent = postContent;
-        this.postImage = postImage;
+        this.imagePath = postImage;
         this.upVoteCount = upVoteCount;
         this.downVoteCount = downVoteCount;
         this.commentCount = commentCount;
@@ -51,8 +51,8 @@ public class Post {
         return postContent;
     }
 
-    public int getPostImage() {
-        return postImage;
+    public String getImagePath() {
+        return imagePath;
     }
 
     public int getUpVoteCount() {
@@ -91,8 +91,8 @@ public class Post {
         this.postContent = postContent;
     }
 
-    public void setPostImage(int postImage) {
-        this.postImage = postImage;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public void setUpVoteCount(int upVoteCount) {
@@ -142,7 +142,7 @@ public class Post {
                 "userName='" + userName + '\'' +
                 ", distanceFromUser='" + distanceFromUser + '\'' +
                 ", postContent='" + postContent + '\'' +
-                ", postImage=" + postImage +
+                ", postImage=" + imagePath +
                 ", upVoteCount=" + upVoteCount +
                 ", downVoteCount=" + downVoteCount +
                 ", commentCount=" + commentCount +

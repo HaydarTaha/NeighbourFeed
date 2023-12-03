@@ -26,6 +26,15 @@
         android:divider="@null"
         android:dividerHeight="0dp" />
 
+    <!-- Progress Bar set color to colorControlActivated where in /res/values/themes.xml -->
+    <ProgressBar
+        android:id="@+id/progressBarMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="?android:attr/colorControlActivated"
+        android:visibility="gone" />
+
     <!-- Footer -->
     <LinearLayout
         android:id="@+id/footerLayout"

@@ -28,34 +28,36 @@ public class Register extends AppCompatActivity {
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     TextView goToLogin;
+
     @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(),Login.class);
+        if (currentUser != null) {
+            Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
             finish();
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         Objects.requireNonNull(getSupportActionBar()).hide();
-        editTextMail=findViewById(R.id.email_register);
-        editTextPassword=findViewById(R.id.password_register);
-        buttonReg=findViewById(R.id.btn_register);
-        mAuth=FirebaseAuth.getInstance();
-        progressBar=findViewById(R.id.progressBar_register);
-        goToLogin=findViewById(R.id.loginNow);
+        editTextMail = findViewById(R.id.email_register);
+        editTextPassword = findViewById(R.id.password_register);
+        buttonReg = findViewById(R.id.btn_register);
+        mAuth = FirebaseAuth.getInstance();
+        progressBar = findViewById(R.id.progressBar_register);
+        goToLogin = findViewById(R.id.loginNow);
 
         editTextPassword.setInputType(129);
 
         goToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
                 finish();
             }
@@ -64,15 +66,15 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                String email,password;
-                email=String.valueOf(editTextMail.getText());
-                password=String.valueOf(editTextPassword.getText());
+                String email, password;
+                email = String.valueOf(editTextMail.getText());
+                password = String.valueOf(editTextPassword.getText());
 
-                if (TextUtils.isEmpty(email)){
+                if (TextUtils.isEmpty(email)) {
                     Toast.makeText(Register.this, "Enter Your Mail!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (TextUtils.isEmpty(password)){
+                if (TextUtils.isEmpty(password)) {
                     Toast.makeText(Register.this, "Enter Password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -81,7 +83,7 @@ public class Register extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE );
+                                progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     Toast.makeText(Register.this, "Account Created", Toast.LENGTH_SHORT).show();
                                 } else {
