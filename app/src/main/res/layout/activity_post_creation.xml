@@ -13,7 +13,6 @@
 
     <Button
         android:padding="15dp"
-
         android:id="@+id/btnSelectFromGallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,27 +31,34 @@
         android:layout_marginEnd="16dp"
         android:hint="Enter text for your post" />
 
+    <Button
+        android:id="@+id/btnStartRecording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Recording"
+        android:layout_below="@id/editTextPostText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:padding="15dp" />
+
     <Spinner
         android:id="@+id/spinnerPostType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextPostText"
+        android:layout_below="@id/btnStartRecording"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:padding="15dp"
-        />
+        android:padding="15dp" />
 
     <Button
         android:id="@+id/btnAddPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Post"
-
         android:layout_below="@id/spinnerPostType"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:padding="15dp"
-        />
+        android:padding="15dp" />
 
 </RelativeLayout>
