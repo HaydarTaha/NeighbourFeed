@@ -3,9 +3,11 @@ package com.neighbourfeed;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +20,17 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import java.util.Objects;
 
 public class UserProfile extends AppCompatActivity {
+
+    TextView textViewUserName;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+        textViewUserName = findViewById(R.id.textViewUsername);
+        textViewUserName.setText(intent.getStringExtra("userName"));
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -20,6 +20,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
@@ -35,28 +36,30 @@ public class Login extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String uid = null;
-        String email = null;
-        // if user go to MainActivity directly
         if (currentUser != null) {
             for (UserInfo profile : currentUser.getProviderData()) {
                 String providerId = profile.getProviderId();
-                if (providerId.equals("password")) {
-                    continue;
-                } else {
-                    email = profile.getEmail();
-                    uid = profile.getUid();
+                String uid = profile.getUid();
+                String name = profile.getDisplayName();
+                String email = profile.getEmail();
+
+                if (providerId.equals("firebase")) {
+                    Log.d("Login", "onStart: " + "Google user");
+                    Log.d("Login", "onStart: " + "Name: " + name);
+                    Log.d("Login", "onStart: " + "Email: " + email);
+                    Log.d("Login", "onStart: " + "Uid: " + uid);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("fromLogin", true);
+                    intent.putExtra("name", name);
+                    intent.putExtra("email", email);
+                    intent.putExtra("uid", uid);
+                    startActivity(intent);
+                    finish();
+                    break;
                 }
             }
-            //Find userName with uid
-            //findUserName(uid);
-            //Passing data to MainActivity
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("uid", uid);
-            //intent.putExtra("name", userName);
-            intent.putExtra("email", email);
-            startActivity(intent);
-            finish();
+        } else {
+            Log.d("Login", "onStart: " + "No user");
         }
     }
 
@@ -100,29 +103,7 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Enter Password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!isEmail) {
-                    //TODO: Get email from username in database
-                }
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(Login.this, "Login successful", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
             }
         });
-    }
-
-    private void findUserName(String uid) {
-
     }
 }

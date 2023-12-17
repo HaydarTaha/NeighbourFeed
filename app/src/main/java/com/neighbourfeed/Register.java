@@ -19,26 +19,17 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
 public class Register extends AppCompatActivity {
-    TextInputEditText editTextMail, editTextPassword;
+    TextInputEditText editTextMail, editTextPassword, editTextUserName;
     Button buttonReg;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     TextView goToLogin;
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Intent intent = new Intent(getApplicationContext(), Login.class);
-            startActivity(intent);
-            finish();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +37,7 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Objects.requireNonNull(getSupportActionBar()).hide();
         editTextMail = findViewById(R.id.email_register);
+        editTextUserName = findViewById(R.id.username_register);
         editTextPassword = findViewById(R.id.password_register);
         buttonReg = findViewById(R.id.btn_register);
         mAuth = FirebaseAuth.getInstance();
@@ -66,8 +58,9 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                String email, password;
+                String email, userName, password;
                 email = String.valueOf(editTextMail.getText());
+                userName = String.valueOf(editTextUserName.getText());
                 password = String.valueOf(editTextPassword.getText());
 
                 if (TextUtils.isEmpty(email)) {
@@ -78,6 +71,10 @@ public class Register extends AppCompatActivity {
                     Toast.makeText(Register.this, "Enter Password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (TextUtils.isEmpty(userName)) {
+                    Toast.makeText(Register.this, "Enter Username!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -85,11 +82,29 @@ public class Register extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(Register.this, "Account Created", Toast.LENGTH_SHORT).show();
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(userName)
+                                            .build();
+                                    assert user != null;
+                                    user.updateProfile(profileUpdates)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Toast.makeText(Register.this, "Your account has been created", Toast.LENGTH_SHORT).show();
+                                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                        intent.putExtra("fromRegister", true);
+                                                        intent.putExtra("name", userName);
+                                                        intent.putExtra("email", email);
+                                                        intent.putExtra("uid", user.getUid());
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                }
+                                            });
                                 } else {
-
-                                    Toast.makeText(Register.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Register.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

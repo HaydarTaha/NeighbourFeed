@@ -35,6 +35,29 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class MainActivity extends AppCompatActivity {
 
     FirebaseFirestore database;
+    User user;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Get intent data
+        Intent intent = getIntent();
+
+        // Get from login
+        boolean fromLogin = intent.getBooleanExtra("fromLogin", false);
+
+        // Get from register
+        boolean fromRegister = intent.getBooleanExtra("fromRegister", false);
+
+        if (fromLogin || fromRegister) {
+            String name = intent.getStringExtra("name");
+            String email = intent.getStringExtra("email");
+            String uid = intent.getStringExtra("uid");
+
+            // Create user object
+            user = new User(name, email, uid);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +103,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void openProfile() {
         Intent intent = new Intent(this, UserProfile.class);
+        intent.putExtra("userName", user.getUserName());
         startActivity(intent);
+        finish();
     }
 
     @SuppressLint({"SetTextI18n", "RtlHardcoded"})
