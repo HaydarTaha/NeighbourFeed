@@ -1,8 +1,14 @@
 package com.neighbourfeed;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,17 +25,19 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class CreatePost extends AppCompatActivity {
+
     private static final int CAMERA_PERMISSION_REQUEST = 100;
-    private static final int STORAGE_PERMISSION_REQUEST = 101;
+    private static final int LOCATION_PERMISSION_REQUEST = 101;
     private static final int RECORD_AUDIO_PERMISSION_REQUEST = 104;
     private static final int CAMERA_REQUEST = 102;
     private static final int GALLERY_REQUEST = 103;
@@ -38,8 +46,11 @@ public class CreatePost extends AppCompatActivity {
     private boolean isRecording = false;
 
     private Button btnStartRecording;
-    private Button buttonPick;
+    private Button btnReportLocation;
     private ActivityResultLauncher<Intent> resultLauncher;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +61,7 @@ public class CreatePost extends AppCompatActivity {
         Button btnSelectImageCamera = findViewById(R.id.btnSelectImageCamera);
         Button btnSelectFromGallery = findViewById(R.id.btnSelectFromGallery);
         btnStartRecording = findViewById(R.id.btnStartRecording);
+        btnReportLocation = findViewById(R.id.btnLocation);
         registerResult();
 
         btnSelectFromGallery.setOnClickListener(view -> pickImage());
@@ -71,12 +83,17 @@ public class CreatePost extends AppCompatActivity {
             }
         });
 
-
-
         btnStartRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toggleRecording();
+            }
+        });
+
+        btnReportLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestLocation();
             }
         });
     }
@@ -112,21 +129,73 @@ public class CreatePost extends AppCompatActivity {
         }
     }
 
-   /* private void requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_REQUEST);
+    private void requestLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                getAddressFromLocation(latitude, longitude);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+            }
+        };
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         } else {
-            openGallery();
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
         }
-    }*/
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                }
+            } else {
+                showToast("Location permission is required");
+            }
+        }
+    }
 
-    private void requestAudioPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO_PERMISSION_REQUEST);
+    private void getAddressFromLocation(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                String locationAddress = address.getAddressLine(0);
+                showToast("Location: " + locationAddress);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateButtonState() {
+        if (isRecording) {
+            btnStartRecording.setText("Stop Recording");
         } else {
-            startRecording();
+            btnStartRecording.setText("Start Recording");
         }
     }
 
@@ -135,6 +204,13 @@ public class CreatePost extends AppCompatActivity {
             stopRecording();
         } else {
             requestAudioPermission();
+        }
+    }
+    private void requestAudioPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO_PERMISSION_REQUEST);
+        } else {
+            startRecording();
         }
     }
 
@@ -175,45 +251,11 @@ public class CreatePost extends AppCompatActivity {
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
 
-    private void openGallery() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        galleryIntent.setType("image/*");
-        resultLauncher.launch(galleryIntent);
-    }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openCamera();
-            } else {
-                showToast("Camera permission is required to take a picture");
-            }
-        } else if (requestCode == STORAGE_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //openGallery();
-            } else {
-                //showToast("Storage permission is required to select an image");
-            }
-        } else if (requestCode == RECORD_AUDIO_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startRecording();
-            } else {
-                showToast("Audio recording permission is required");
-            }
-        }
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void updateButtonState() {
-        if (isRecording) {
-            btnStartRecording.setText("Stop Recording");
-        } else {
-            btnStartRecording.setText("Start Recording");
+    protected void onDestroy() {
+        super.onDestroy();
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
         }
     }
 }

@@ -7,7 +7,7 @@
         android:id="@+id/btnSelectImageCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Image"
+        android:text="Take Photo"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
@@ -37,9 +37,22 @@
         android:layout_height="wrap_content"
         android:text="Start Recording"
         android:layout_below="@id/editTextPostText"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:padding="15dp" />
+        android:padding="15dp"
+        android:layout_marginStart="16dp"
+       />
+
+    <Button
+        android:id="@+id/btnLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Report Location"
+        android:layout_below="@id/editTextPostText"
+        android:layout_marginTop="32dp"
+        android:padding="15dp"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@+id/btnStartRecording"
+        />
 
     <Spinner
         android:id="@+id/spinnerPostType"
