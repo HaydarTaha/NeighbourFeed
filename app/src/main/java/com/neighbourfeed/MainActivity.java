@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         // Get from register
         boolean fromRegister = intent.getBooleanExtra("fromRegister", false);
 
+        // Get from user profile
+        boolean fromUserProfile = intent.getBooleanExtra("fromUserProfile", false);
+
         if (fromLogin || fromRegister) {
             String name = intent.getStringExtra("name");
             String email = intent.getStringExtra("email");
@@ -56,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
 
             // Create user object
             user = new User(name, email, uid);
+        } else if (fromUserProfile) {
+            String userName = intent.getStringExtra("userName");
+            String email = intent.getStringExtra("email");
+            String uid = intent.getStringExtra("uid");
+
+            // Create user object
+            user = new User(userName, email, uid);
         }
     }
 
@@ -104,8 +114,9 @@ public class MainActivity extends AppCompatActivity {
     private void openProfile() {
         Intent intent = new Intent(this, UserProfile.class);
         intent.putExtra("userName", user.getUserName());
+        intent.putExtra("email", user.getEmail());
+        intent.putExtra("uid", user.getUid());
         startActivity(intent);
-        finish();
     }
 
     @SuppressLint({"SetTextI18n", "RtlHardcoded"})

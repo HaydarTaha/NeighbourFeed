@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +24,9 @@ import java.util.Objects;
 public class UserProfile extends AppCompatActivity {
 
     TextView textViewUserName;
+    String userName;
+    String email;
+    String uid;
 
     @Override
     protected void onStart() {
@@ -29,6 +34,9 @@ public class UserProfile extends AppCompatActivity {
         Intent intent = getIntent();
         textViewUserName = findViewById(R.id.textViewUsername);
         textViewUserName.setText(intent.getStringExtra("userName"));
+        userName = intent.getStringExtra("userName");
+        email = intent.getStringExtra("email");
+        uid = intent.getStringExtra("uid");
     }
 
     @SuppressLint("SetTextI18n")
@@ -40,6 +48,19 @@ public class UserProfile extends AppCompatActivity {
 
         MaterialButtonToggleGroup toggleGroup = findViewById(R.id.toggleGroup);
         LinearLayout linearLayoutPosts = findViewById(R.id.linearLayoutPosts);
+
+        TextView headerTextView = findViewById(R.id.headerTextView);
+
+        ImageButton profileButton = findViewById(R.id.profileButton);
+
+        profileButton.setClickable(false);
+
+        headerTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             //Create a TextView object and display the selected button's text in the LinearLayout
