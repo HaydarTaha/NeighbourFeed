@@ -89,12 +89,16 @@ public class CommentPage extends AppCompatActivity {
                                 listView.setAdapter(adapter);
                             } else {
                                 Log.d("Comment", "Comments list is empty");
+                                ProgressBar progressBar = findViewById(R.id.progressBarComment);
+                                progressBar.setVisibility(View.GONE);
                             }
                         } else {
                             Log.d("Comment", "Comments field is null");
                         }
                     } else {
                         Log.d("Comment", "No such document");
+                        ProgressBar progressBar = findViewById(R.id.progressBarComment);
+                        progressBar.setVisibility(View.GONE);
                     }
                 } else {
                     Log.d("Comment", "Error getting document: ", task.getException());

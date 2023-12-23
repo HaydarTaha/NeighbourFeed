@@ -2,6 +2,7 @@ package com.neighbourfeed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class PostAdapter extends ArrayAdapter<Post> {
 
-    public PostAdapter(Context context, ArrayList<Post> posts) {
+    String userName;
+
+    public PostAdapter(Context context, ArrayList<Post> posts, String userName) {
         super(context, 0, posts);
+        this.userName = userName;
     }
 
     @NonNull
@@ -77,6 +83,23 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
                 calculateTotalVotes(currentPost, totalLikes);
                 notifyDataSetChanged();
+
+                //Update database, add userNames to upVotedUsers array
+                String postId = currentPost.getPostId();
+                FirebaseFirestore database = FirebaseFirestore.getInstance();
+                //Get upVotedUsers array from database where postId = postId
+                database.collection("Posts").document(postId).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Get the documentSnapshot from task
+                        if (task.getResult() != null) {
+                            // Get the upVotedUsers array from documentSnapshot
+                            ArrayList<String> upVotedUsers = (ArrayList<String>) task.getResult().get("upVotedUsers");
+                            // Get downVotedUsers array from documentSnapshot to check if userName is in downVotedUsers array
+                            ArrayList<String> downVotedUsers = (ArrayList<String>) task.getResult().get("downVotedUsers");
+                            controlUpVote(upVotedUsers, downVotedUsers, database, postId);
+                        }
+                    }
+                });
             }
         });
 
@@ -104,6 +127,23 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
                 calculateTotalVotes(currentPost, totalLikes);
                 notifyDataSetChanged();
+
+                //Update database, add userNames to downVotedUsers array
+                String postId = currentPost.getPostId();
+                FirebaseFirestore database = FirebaseFirestore.getInstance();
+                //Get downVotedUsers array from database where postId = postId
+                database.collection("Posts").document(postId).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Get the documentSnapshot from task
+                        if (task.getResult() != null) {
+                            // Get the downVotedUsers array from documentSnapshot
+                            ArrayList<String> downVotedUsers = (ArrayList<String>) task.getResult().get("downVotedUsers");
+                            // Get upVotedUsers array from documentSnapshot to check if userName is in upVotedUsers array
+                            ArrayList<String> upVotedUsers = (ArrayList<String>) task.getResult().get("upVotedUsers");
+                            controlDownVote(downVotedUsers, upVotedUsers, database, postId);
+                        }
+                    }
+                });
             }
         });
 
@@ -115,6 +155,70 @@ public class PostAdapter extends ArrayAdapter<Post> {
         });
 
         return listItemView;
+    }
+
+    private void controlUpVote(ArrayList<String> upVotedUsers, ArrayList<String> downVotedUsers, FirebaseFirestore database, String postId) {
+        if (upVotedUsers != null) {
+            if (upVotedUsers.contains(userName)) {
+                //Remove userName from upVotedUsers array
+                upVotedUsers.remove(userName);
+                //Update database
+                database.collection("Posts").document(postId).update("upVotedUsers", upVotedUsers);
+            } else {
+                //Add userName to upVotedUsers array
+                upVotedUsers.add(userName);
+                //Update database
+                database.collection("Posts").document(postId).update("upVotedUsers", upVotedUsers);
+            }
+        } else {
+            //Create new upVotedUsers array
+            ArrayList<String> newUpVotedUsers = new ArrayList<>();
+            //Add userName to newUpVotedUsers array
+            newUpVotedUsers.add(userName);
+            //Update database
+            database.collection("Posts").document(postId).update("upVotedUsers", newUpVotedUsers);
+        }
+
+        if (downVotedUsers != null) {
+            if (downVotedUsers.contains(userName)) {
+                //Remove userName from downVotedUsers array
+                downVotedUsers.remove(userName);
+                //Update database
+                database.collection("Posts").document(postId).update("downVotedUsers", downVotedUsers);
+            }
+        }
+    }
+
+    private void controlDownVote(ArrayList<String> downVotedUsers, ArrayList<String> upVotedUsers, FirebaseFirestore database, String postId) {
+        if (downVotedUsers != null) {
+            if (downVotedUsers.contains(userName)) {
+                //Remove userName from downVotedUsers array
+                downVotedUsers.remove(userName);
+                //Update database
+                database.collection("Posts").document(postId).update("downVotedUsers", downVotedUsers);
+            } else {
+                //Add userName to downVotedUsers array
+                downVotedUsers.add(userName);
+                //Update database
+                database.collection("Posts").document(postId).update("downVotedUsers", downVotedUsers);
+            }
+        } else {
+            //Create new downVotedUsers array
+            ArrayList<String> newDownVotedUsers = new ArrayList<>();
+            //Add userName to newDownVotedUsers array
+            newDownVotedUsers.add(userName);
+            //Update database
+            database.collection("Posts").document(postId).update("downVotedUsers", newDownVotedUsers);
+        }
+
+        if (upVotedUsers != null) {
+            if (upVotedUsers.contains(userName)) {
+                //Remove userName from upVotedUsers array
+                upVotedUsers.remove(userName);
+                //Update database
+                database.collection("Posts").document(postId).update("upVotedUsers", upVotedUsers);
+            }
+        }
     }
 
     private void openCommentPage(String postId) {

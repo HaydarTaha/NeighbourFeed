@@ -41,6 +41,10 @@ public class Post {
         this.isDownVotedByUser = isDownVotedByUser;
     }
 
+    public Post(){
+
+    }
+
     public String getUserName() {
         return userName;
     }

@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,11 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 import android.widget.SeekBar;
 import android.view.LayoutInflater;
@@ -232,12 +231,12 @@ public class MainActivity extends AppCompatActivity {
             ProgressBar progressBar = findViewById(R.id.progressBarMain);
             progressBar.setVisibility(View.GONE);
         }
-        PostAdapter adapter = new PostAdapter(this, posts);
+        PostAdapter adapter = new PostAdapter(this, posts, null);
         listView.setAdapter(adapter);
     }
 
     private void fetchPosts(ArrayList<Post> posts) {
-        //TODO: Fetch posts from firebase database
+        //Fetch posts from firebase database
         database.collection("Posts")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -247,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
                             for (int i = 0; i < 10; i++) {
                                 DocumentSnapshot document = task.getResult().getDocuments().get(i);
                                 Post post = processPostData(document);
+                                fetchCommentsWithID(document.getId(), post);
                                 Log.d("MainActivity", "Post: " + post.toString());
                                 posts.add(post);
                             }
@@ -254,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
                             for (int i = 0; i < task.getResult().size(); i++) {
                                 DocumentSnapshot document = task.getResult().getDocuments().get(i);
                                 Post post = processPostData(document);
+                                fetchCommentsWithID(document.getId(), post);
                                 Log.d("MainActivity", "Post: " + post.toString());
                                 posts.add(post);
                             }
@@ -262,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                         if (!posts.isEmpty()) {
                             ProgressBar progressBar = findViewById(R.id.progressBarMain);
                             progressBar.setVisibility(View.GONE);
-                            PostAdapter adapter = new PostAdapter(this, posts);
+                            PostAdapter adapter = new PostAdapter(this, posts, user.getUserName());
                             ListView listView = findViewById(R.id.postListView);
                             listView.setAdapter(adapter);
                         }
@@ -293,19 +294,59 @@ public class MainActivity extends AppCompatActivity {
         distance = Math.round(distance * 10.0) / 10.0;
         String distanceString = Double.toString(distance);
 
-        //TODO: Check if user has upVoted or downVoted
-        boolean hasUpVoted = false;
-        boolean hasDownVoted = false;
+        //Check if user has upVoted or downVoted
+        boolean upVoted = false;
+        for (String upVotedUser : upVotedUsers) {
+            if (upVotedUser.equals(user.getUserName())) {
+                upVoted = true;
+                break;
+            }
+        }
+        boolean downVoted = false;
+        for (String downVotedUser : downVotedUsers) {
+            if (downVotedUser.equals(user.getUserName())) {
+                downVoted = true;
+                break;
+            }
+        }
 
-        //TODO: Check the commentCount
         int commentCount = 0;
 
         assert imagePath != null;
         if (imagePath.equals("imagePath")) {
-            return new Post(userName, distanceString, content, upVotes, downVotes, commentCount, type, hasUpVoted, hasDownVoted, id);
+            return new Post(userName, distanceString, content, upVotes, downVotes, commentCount, type, upVoted, downVoted, id);
         } else {
-            return new Post(userName, distanceString, content, imagePath, upVotes, downVotes, commentCount, type, hasUpVoted, hasDownVoted);
+            return new Post(userName, distanceString, content, imagePath, upVotes, downVotes, commentCount, type, upVoted, downVoted);
         }
+    }
+
+    private void fetchCommentsWithID(String id, Post post) {
+        Log.d("Comment", "Post id: " + id);
+        //Fetch posts from firebase database
+        database.collection("Comments")
+                .document(id)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            ArrayList<Object> commentList = (ArrayList<Object>) documentSnapshot.get("comments");
+                            if (commentList != null) {
+                                post.setCommentCount(commentList.size());
+                                Log.d("Comment", "Comment count: " + commentList.size());
+                                notifyAdapter();
+                            }
+                        }
+                    } else {
+                        Log.d("Comment", "Error getting document: ", task.getException());
+                    }
+                });
+    }
+
+    private void notifyAdapter() {
+        ListView listView = findViewById(R.id.postListView);
+        PostAdapter adapter = (PostAdapter) listView.getAdapter();
+        adapter.notifyDataSetChanged();
     }
 
     @SuppressWarnings("unchecked")
