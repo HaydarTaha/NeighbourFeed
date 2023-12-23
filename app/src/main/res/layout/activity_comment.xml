@@ -15,9 +15,9 @@
         <!-- User Icon -->
         <ImageButton
             android:id="@+id/commentUserIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="16dp"
             android:background="?android:attr/selectableItemBackground"
             android:src="@drawable/ic_profile"
             android:scaleType="centerCrop"
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/username"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -38,7 +38,7 @@
         android:id="@+id/commentText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/comment"
-        android:textSize="16sp" />
+        android:textSize="18sp" />
 </LinearLayout>
