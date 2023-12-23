@@ -1,25 +1,25 @@
 package com.neighbourfeed;
 
 public class Comment {
-    private int iconResource;
-    private String username;
-    private String commentText;
+    private final String userName;
+    private final String commentText;
+    private final String commentDate;
 
-    public Comment(int iconResource, String username, String commentText) {
-        this.iconResource = iconResource;
-        this.username = username;
+    public Comment(String userName, String commentText, String commentDate) {
+        this.userName = userName;
         this.commentText = commentText;
+        this.commentDate = commentDate;
     }
 
-    public int getIconResource() {
-        return iconResource;
-    }
-
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
     public String getCommentText() {
         return commentText;
+    }
+
+    public String getCommentDate() {
+        return commentDate;
     }
 }

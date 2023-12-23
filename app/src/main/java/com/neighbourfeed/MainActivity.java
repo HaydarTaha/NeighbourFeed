@@ -281,6 +281,8 @@ public class MainActivity extends AppCompatActivity {
         String type = document.getString("type");
         List<String> upVotedUsers = castObjectToList(document.get("upVotedUsers"));
         String userName = document.getString("userName");
+        String id = document.getId();
+        Log.d("MainActivity", "Post: " + content + " " + createDate + " " + downVotedUsers + " " + imagePath + " " + location + " " + type + " " + upVotedUsers + " " + userName + " " + id);
 
         int upVotes = upVotedUsers.size();
         int downVotes = downVotedUsers.size();
@@ -300,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
 
         assert imagePath != null;
         if (imagePath.equals("imagePath")) {
-            return new Post(userName, distanceString, content, upVotes, downVotes, commentCount, type, hasUpVoted, hasDownVoted);
+            return new Post(userName, distanceString, content, upVotes, downVotes, commentCount, type, hasUpVoted, hasDownVoted, id);
         } else {
             return new Post(userName, distanceString, content, imagePath, upVotes, downVotes, commentCount, type, hasUpVoted, hasDownVoted);
         }

@@ -29,15 +29,12 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         Comment currentComment = getItem(position);
 
-        ImageView commentUserIcon = listItemView.findViewById(R.id.commentUserIcon);
         TextView commentUsername = listItemView.findViewById(R.id.commentUsername);
         TextView commentText = listItemView.findViewById(R.id.commentText);
 
-        if (currentComment != null) {
-            commentUserIcon.setImageResource(currentComment.getIconResource());
-            commentUsername.setText(currentComment.getUsername());
-            commentText.setText(currentComment.getCommentText());
-        }
+        assert currentComment != null;
+        commentUsername.setText(currentComment.getUserName());
+        commentText.setText(currentComment.getCommentText());
 
         return listItemView;
     }

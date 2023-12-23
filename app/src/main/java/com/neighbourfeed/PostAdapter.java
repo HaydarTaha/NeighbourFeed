@@ -1,6 +1,7 @@
 package com.neighbourfeed;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,11 +110,17 @@ public class PostAdapter extends ArrayAdapter<Post> {
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //openComment();
+                openCommentPage(currentPost.getPostId());
             }
         });
 
         return listItemView;
+    }
+
+    private void openCommentPage(String postId) {
+        Intent intent = new Intent(getContext(), CommentPage.class);
+        intent.putExtra("postId", postId);
+        getContext().startActivity(intent);
     }
 
     private void calculateTotalVotes(Post currentPost, TextView totalLikes) {

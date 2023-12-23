@@ -5,14 +5,14 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Kullanıcı Bilgileri ve Profil -->
+    <!-- User Information and User Icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
         android:orientation="horizontal">
 
-        <!-- Kullanıcı Profil Resmi -->
+        <!-- User Icon -->
         <ImageButton
             android:id="@+id/commentUserIcon"
             android:layout_width="48dp"
@@ -23,7 +23,7 @@
             android:scaleType="centerCrop"
             android:contentDescription="@string/profile" />
 
-        <!-- Kullanıcı Adı -->
+        <!-- Username -->
         <TextView
             android:id="@+id/commentUsername"
             android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Yorum Metni -->
+    <!-- Comment Text -->
     <TextView
         android:id="@+id/commentText"
         android:layout_width="match_parent"

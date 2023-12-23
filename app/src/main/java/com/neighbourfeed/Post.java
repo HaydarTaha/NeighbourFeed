@@ -13,8 +13,9 @@ public class Post {
     private String type;
     private boolean isUpVotedByUser;
     private boolean isDownVotedByUser;
+    private String postId;
 
-    public Post(String userName, String distanceFromUser, String postContent, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser) {
+    public Post(String userName, String distanceFromUser, String postContent, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser, String postId) {
         this.userName = userName;
         this.distanceFromUser = distanceFromUser;
         this.postContent = postContent;
@@ -24,6 +25,7 @@ public class Post {
         this.type = type;
         this.isUpVotedByUser = isUpVotedByUser;
         this.isDownVotedByUser = isDownVotedByUser;
+        this.postId = postId;
     }
 
     public Post(String userName, String distanceFromUser, String postContent, String postImage, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser) {
@@ -71,6 +73,10 @@ public class Post {
         return type;
     }
 
+    public String getPostId() {
+        return postId;
+    }
+
     public boolean isUpVotedByUser() {
         return isUpVotedByUser;
     }
@@ -109,6 +115,10 @@ public class Post {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public void setUpVotedByUser(boolean upVotedByUser) {

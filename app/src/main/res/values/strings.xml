@@ -24,5 +24,6 @@
     <string name="comments">Comments</string>
     <string name="posts">Posts</string>
     <string name="email_or_username">Email or User Name</string>
+    <string name="back">Back</string>
 
 </resources>
