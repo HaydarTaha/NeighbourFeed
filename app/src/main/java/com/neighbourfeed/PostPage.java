@@ -1,5 +1,7 @@
 package com.neighbourfeed;
 
+import static java.security.AccessController.getContext;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -30,7 +32,7 @@ public class PostPage extends AppCompatActivity {
     Post post;
     String imageUri;
     String audioUri;
-    User user;
+    String userName;
 
     @Override
     protected void onStart() {
@@ -38,7 +40,7 @@ public class PostPage extends AppCompatActivity {
         Intent intent = getIntent();
         postId = intent.getStringExtra("postId");
         post = intent.getParcelableExtra("post");
-        user = (User) intent.getSerializableExtra("user");
+        userName = intent.getStringExtra("userName");
         database = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         fetchCommentsWithID(postId, post);
@@ -56,10 +58,7 @@ public class PostPage extends AppCompatActivity {
 
         ImageButton commentButton = findViewById(R.id.iconComment);
         commentButton.setOnClickListener(v -> {
-            Intent intent = new Intent(PostPage.this, CommentPage.class);
-            intent.putExtra("postId", postId);
-            intent.putExtra("userName", user.getUserName());
-            startActivity(intent);
+            openCommentPage(postId);
         });
 
         ImageButton upVoteButton = findViewById(R.id.upVoteIcon);
@@ -132,6 +131,15 @@ public class PostPage extends AppCompatActivity {
                 audioPost.setVisibility(View.VISIBLE);
             }).addOnFailureListener(e -> Log.d("Post", "Error getting audio: " + e.getMessage()));
             Log.d("Post", "Audio uri: " + audioUri);
+        } else if (post.getMediaType().equals("none")) {
+            Log.d("Post", "No media");
         }
+    }
+
+    private void openCommentPage(String postId) {
+        Intent intent = new Intent(getApplicationContext(), CommentPage.class);
+        intent.putExtra("postId", postId);
+        intent.putExtra("userName", userName);
+        startActivity(intent);
     }
 }

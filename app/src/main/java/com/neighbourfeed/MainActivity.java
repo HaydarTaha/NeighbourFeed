@@ -186,12 +186,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                // Not needed
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                // Not needed
             }
         });
 
@@ -309,6 +309,11 @@ public class MainActivity extends AppCompatActivity {
                 downVoted = true;
                 break;
             }
+        }
+
+        // Check if post has no media
+        if (mediaPath == null) {
+            mediaPath = "";
         }
 
         return new Post(userName, distanceString, content, upVotes, downVotes, 0, type, upVoted, downVoted, id, mediaType, mediaPath);
