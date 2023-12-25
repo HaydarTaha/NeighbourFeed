@@ -13,6 +13,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -184,10 +185,11 @@ public class CreatePost extends AppCompatActivity {
             if (addresses != null && addresses.size() > 0) {
                 Address address = addresses.get(0);
                 String locationAddress = address.getAddressLine(0);
-                showToast("Location: " + locationAddress);
+                Log.d("Location", "Location: " + locationAddress);
             }
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d("Location", "Error: " + e.getMessage());
         }
     }
 
