@@ -1,18 +1,18 @@
 package com.neighbourfeed;
 
-import static java.security.AccessController.getContext;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class PostPage extends AppCompatActivity {
     String audioUri;
     String userName;
     boolean playPause = false;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onStart() {
@@ -99,8 +101,8 @@ public class PostPage extends AppCompatActivity {
 
     private void putPostData(Post post) {
         //Set post username
-        TextView userName = findViewById(R.id.textUsername);
-        userName.setText(post.getUserName());
+        TextView userNameTextView = findViewById(R.id.textUsername);
+        userNameTextView.setText(post.getUserName());
 
         //Set post distance
         TextView distance = findViewById(R.id.textDistance);
@@ -130,23 +132,22 @@ public class PostPage extends AppCompatActivity {
                 View audioPost = findViewById(R.id.audioPlayerLayout);
                 MaterialCardView audioCard = findViewById(R.id.audioPostCard);
                 audioReference.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     audioCard.setVisibility(MaterialCardView.VISIBLE);
                     audioPost.setVisibility(View.VISIBLE);
                     ImageButton playPauseButton = findViewById(R.id.playPauseButton);
                     playPauseButton.setOnClickListener(v -> {
-                        //Change play icon to pause icon
+                        // Change play icon to pause icon
                         if (playPause) {
                             playPauseButton.setImageResource(R.drawable.ic_play);
+                            stopMediaPlayer();
                             playPause = false;
                         } else {
                             playPauseButton.setImageResource(R.drawable.ic_pause);
+                            startMediaPlayer();
                             playPause = true;
                         }
-                        //TODO: Implement play/pause
                     });
                 }).addOnFailureListener(e -> Log.d("Post", "Error getting audio: " + e.getMessage()));
-                Log.d("Post", "Audio uri: " + audioUri);
                 break;
             case "none":
                 Log.d("Post", "No media");
@@ -159,5 +160,81 @@ public class PostPage extends AppCompatActivity {
         intent.putExtra("postId", postId);
         intent.putExtra("userName", userName);
         startActivity(intent);
+    }
+
+    private void startMediaPlayer() {
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+            try {
+                // Get the download URL for the audio file
+                storage.getReferenceFromUrl(audioUri)
+                        .getDownloadUrl()
+                        .addOnSuccessListener(uri -> {
+                            try {
+                                mediaPlayer.setDataSource(uri.toString());
+                                mediaPlayer.prepare();
+                                mediaPlayer.start();
+
+                                // Set up SeekBar
+                                SeekBar seekBar = findViewById(R.id.seekBar);
+                                seekBar.setMax(mediaPlayer.getDuration());
+
+                                // Update SeekBar progress and current duration
+                                new Thread(() -> {
+                                    while (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                        try {
+                                            Thread.sleep(1000);
+                                            runOnUiThread(() -> {
+                                                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                                                updateCurrentDuration();
+                                            });
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }).start();
+
+                                mediaPlayer.setOnCompletionListener(mp -> {
+                                    // Playback completed actions
+                                    ImageButton playPauseButton = findViewById(R.id.playPauseButton);
+                                    playPauseButton.setImageResource(R.drawable.ic_play);
+                                    playPause = false;
+                                    stopMediaPlayer();
+                                });
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        })
+                        .addOnFailureListener(e -> Log.d("Post", "Error getting audio URL: " + e.getMessage()));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void updateCurrentDuration() {
+        TextView currentDurationTextView = findViewById(R.id.currentDuration);
+        currentDurationTextView.setText(formatDuration(mediaPlayer.getCurrentPosition()));
+    }
+
+    private String formatDuration(int durationInMillis) {
+        int seconds = durationInMillis / 1000;
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
+
+
+    private void stopMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }
