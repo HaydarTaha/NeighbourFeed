@@ -8,6 +8,7 @@
     tools:context=".UserProfile">
 
     <!-- Header -->
+
     <TextView
         android:id="@+id/headerTextView"
         android:layout_width="wrap_content"
