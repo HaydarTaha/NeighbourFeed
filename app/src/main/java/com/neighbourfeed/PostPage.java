@@ -33,6 +33,7 @@ public class PostPage extends AppCompatActivity {
     String imageUri;
     String audioUri;
     String userName;
+    boolean playPause = false;
 
     @Override
     protected void onStart() {
@@ -110,29 +111,46 @@ public class PostPage extends AppCompatActivity {
         postContent.setText(post.getPostContent());
 
         //Set post Media
-        if (post.getMediaType().equals("image")) {
-            imageUri = post.getMediaPath();
-            StorageReference imageReference = storage.getReferenceFromUrl(imageUri);
-            ImageView imagePost = findViewById(R.id.imagePost);
-            MaterialCardView imageCard = findViewById(R.id.imagePostCard);
-            imageReference.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                imagePost.setImageBitmap(bitmap);
-                imageCard.setVisibility(MaterialCardView.VISIBLE);
-                imagePost.setVisibility(ImageView.VISIBLE);
-            }).addOnFailureListener(e -> Log.d("Post", "Error getting image: " + e.getMessage()));
-        } else if (post.getMediaType().equals("audio")) {
-            audioUri = post.getMediaPath();
-            StorageReference audioReference = storage.getReferenceFromUrl(audioUri);
-            View audioPost = findViewById(R.id.audioPlayerLayout);
-            MaterialCardView audioCard = findViewById(R.id.audioPostCard);
-            audioReference.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
-                audioCard.setVisibility(MaterialCardView.VISIBLE);
-                audioPost.setVisibility(View.VISIBLE);
-            }).addOnFailureListener(e -> Log.d("Post", "Error getting audio: " + e.getMessage()));
-            Log.d("Post", "Audio uri: " + audioUri);
-        } else if (post.getMediaType().equals("none")) {
-            Log.d("Post", "No media");
+        switch (post.getMediaType()) {
+            case "image":
+                imageUri = post.getMediaPath();
+                StorageReference imageReference = storage.getReferenceFromUrl(imageUri);
+                ImageView imagePost = findViewById(R.id.imagePost);
+                MaterialCardView imageCard = findViewById(R.id.imagePostCard);
+                imageReference.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    imagePost.setImageBitmap(bitmap);
+                    imageCard.setVisibility(MaterialCardView.VISIBLE);
+                    imagePost.setVisibility(ImageView.VISIBLE);
+                }).addOnFailureListener(e -> Log.d("Post", "Error getting image: " + e.getMessage()));
+                break;
+            case "audio":
+                audioUri = post.getMediaPath();
+                StorageReference audioReference = storage.getReferenceFromUrl(audioUri);
+                View audioPost = findViewById(R.id.audioPlayerLayout);
+                MaterialCardView audioCard = findViewById(R.id.audioPostCard);
+                audioReference.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    audioCard.setVisibility(MaterialCardView.VISIBLE);
+                    audioPost.setVisibility(View.VISIBLE);
+                    ImageButton playPauseButton = findViewById(R.id.playPauseButton);
+                    playPauseButton.setOnClickListener(v -> {
+                        //Change play icon to pause icon
+                        if (playPause) {
+                            playPauseButton.setImageResource(R.drawable.ic_play);
+                            playPause = false;
+                        } else {
+                            playPauseButton.setImageResource(R.drawable.ic_pause);
+                            playPause = true;
+                        }
+                        //TODO: Implement play/pause
+                    });
+                }).addOnFailureListener(e -> Log.d("Post", "Error getting audio: " + e.getMessage()));
+                Log.d("Post", "Audio uri: " + audioUri);
+                break;
+            case "none":
+                Log.d("Post", "No media");
+                break;
         }
     }
 
