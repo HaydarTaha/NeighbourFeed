@@ -32,14 +32,58 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Body (Post List) -->
+    <!-- Body (Comment ListView) -->
     <ListView
-        android:id="@+id/postListView"
-        android:layout_width="wrap_content"
-        android:layout_height="632dp"
+        android:id="@+id/commentListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_below="@id/headerTextView"
+        android:layout_above="@id/commentInputLayout"
         android:divider="@null"
         android:dividerHeight="0dp" />
+
+    <!-- Comment Input Layout -->
+    <RelativeLayout
+        android:id="@+id/commentInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <!-- Comment Input -->
+        <EditText
+            android:id="@+id/commentInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:hint="@string/add_comment_hint"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:autofillHints="" />
+
+        <!-- Add Comment Button -->
+        <Button
+            android:id="@+id/addCommentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/commentInputEditText"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/add_comment_button"
+            android:enabled="false" />
+    </RelativeLayout>
+
+    <!-- Comment Empty View -->
+    <TextView
+        android:id="@+id/commentEmptyView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textAppearance="@style/HeaderText"
+        android:visibility="gone" />
 
     <!-- Progress Bar set color to colorControlActivated where in /res/values/themes.xml -->
     <ProgressBar

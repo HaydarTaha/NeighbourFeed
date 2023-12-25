@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,7 +33,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         assert currentComment != null;
         commentUsername.setText(currentComment.getUserName());
-        commentText.setText(currentComment.getCommentText());
+        commentText.setText(currentComment.getContent());
 
         return listItemView;
     }

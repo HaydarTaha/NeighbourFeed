@@ -277,13 +277,14 @@ public class MainActivity extends AppCompatActivity {
         String content = document.getString("content");
         String createDate = Objects.requireNonNull(document.getTimestamp("createDate")).toString();
         List<String> downVotedUsers = castObjectToList(document.get("downVotedUsers"));
-        String imagePath = document.getString("imagePath");
+        String mediaPath = document.getString("mediaPath");
+        String mediaType = document.getString("mediaType");
         String location = Objects.requireNonNull(document.getGeoPoint("location")).toString();
         String type = document.getString("type");
         List<String> upVotedUsers = castObjectToList(document.get("upVotedUsers"));
         String userName = document.getString("userName");
         String id = document.getId();
-        Log.d("MainActivity", "Post: " + content + " " + createDate + " " + downVotedUsers + " " + imagePath + " " + location + " " + type + " " + upVotedUsers + " " + userName + " " + id);
+        Log.d("MainActivity", "Post: " + content + " " + createDate + " " + downVotedUsers + " " + mediaPath + " " + mediaType + " " + location + " " + type + " " + upVotedUsers + " " + userName + " " + id);
 
         int upVotes = upVotedUsers.size();
         int downVotes = downVotedUsers.size();
@@ -310,14 +311,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        int commentCount = 0;
-
-        assert imagePath != null;
-        if (imagePath.equals("imagePath")) {
-            return new Post(userName, distanceString, content, upVotes, downVotes, commentCount, type, upVoted, downVoted, id);
-        } else {
-            return new Post(userName, distanceString, content, imagePath, upVotes, downVotes, commentCount, type, upVoted, downVoted);
-        }
+        return new Post(userName, distanceString, content, upVotes, downVotes, 0, type, upVoted, downVoted, id, mediaType, mediaPath);
     }
 
     private void fetchCommentsWithID(String id, Post post) {
@@ -333,8 +327,8 @@ public class MainActivity extends AppCompatActivity {
                             ArrayList<Object> commentList = (ArrayList<Object>) documentSnapshot.get("comments");
                             if (commentList != null) {
                                 post.setCommentCount(commentList.size());
-                                Log.d("Comment", "Comment count: " + commentList.size());
                                 notifyAdapter();
+                                Log.d("Comment", "Comment count: " + commentList.size());
                             }
                         }
                     } else {
@@ -362,5 +356,14 @@ public class MainActivity extends AppCompatActivity {
     private void openCreatePost() {
         Intent intent = new Intent(this, CreatePost.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Fetch posts again
+        ProgressBar progressBar = findViewById(R.id.progressBarMain);
+        progressBar.setVisibility(View.VISIBLE);
+        showPosts();
     }
 }

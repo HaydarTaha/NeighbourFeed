@@ -41,18 +41,24 @@ public class PostAdapter extends ArrayAdapter<Post> {
         TextView textUsername = listItemView.findViewById(R.id.textUsername);
         TextView textDistance = listItemView.findViewById(R.id.textDistance);
         TextView textPost = listItemView.findViewById(R.id.textPost);
-        ImageView imagePost = listItemView.findViewById(R.id.imagePost);
         ImageButton upVoteButton = listItemView.findViewById(R.id.upVoteIcon);
         ImageButton downVoteButton = listItemView.findViewById(R.id.downVoteIcon);
         ImageButton commentButton = listItemView.findViewById(R.id.iconComment);
         TextView commentCount = listItemView.findViewById(R.id.textCommentCount);
         TextView totalLikes = listItemView.findViewById(R.id.totalLikeDislikeCount);
 
+        listItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                assert currentPost != null;
+                onClickPost(currentPost);
+            }
+        });
+
         //Set upVote and downVote icon
         assert currentPost != null;
         upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
         downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
-        getImage(currentPost.getImagePath(), imagePost);
         textUsername.setText(currentPost.getUserName());
         textDistance.setText(currentPost.getDistanceFromUser());
         textPost.setText(currentPost.getPostContent());
@@ -224,6 +230,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
     private void openCommentPage(String postId) {
         Intent intent = new Intent(getContext(), CommentPage.class);
         intent.putExtra("postId", postId);
+        intent.putExtra("userName", userName);
         getContext().startActivity(intent);
     }
 
@@ -232,11 +239,11 @@ public class PostAdapter extends ArrayAdapter<Post> {
         totalLikes.setText(String.valueOf(totalVotes));
     }
 
-    private void getImage(String url, ImageView imagePost) {
-        if (!Objects.equals(url, "image")) {
-            //TODO: Get image from url
-        } else {
-            imagePost.setVisibility(View.GONE);
-        }
+    private void onClickPost(Post currentPost) {
+        Intent intent = new Intent(getContext(), PostPage.class);
+        intent.putExtra("postId", currentPost.getPostId());
+        intent.putExtra("userName", userName);
+        intent.putExtra("post", currentPost);
+        getContext().startActivity(intent);
     }
 }

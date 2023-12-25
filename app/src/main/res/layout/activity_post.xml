@@ -57,17 +57,6 @@
         android:textSize="24sp"
         android:textStyle="normal" />
 
-    <!-- Post Image -->
-    <ImageView
-        android:id="@+id/imagePost"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:contentDescription="@string/post_image" />
-
     <!-- Comment, Up Vote and Down Vote -->
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,12 +1,15 @@
 package com.neighbourfeed;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
-public class Post {
+public class Post implements Parcelable {
     private String userName;
     private String distanceFromUser;
     private String postContent;
-    private String imagePath;
+    private String mediaType;
+    private String mediaPath;
     private int upVoteCount;
     private int downVoteCount;
     private int commentCount;
@@ -15,7 +18,7 @@ public class Post {
     private boolean isDownVotedByUser;
     private String postId;
 
-    public Post(String userName, String distanceFromUser, String postContent, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser, String postId) {
+    public Post(String userName, String distanceFromUser, String postContent, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser, String postId, String mediaType, String mediaPath) {
         this.userName = userName;
         this.distanceFromUser = distanceFromUser;
         this.postContent = postContent;
@@ -26,23 +29,8 @@ public class Post {
         this.isUpVotedByUser = isUpVotedByUser;
         this.isDownVotedByUser = isDownVotedByUser;
         this.postId = postId;
-    }
-
-    public Post(String userName, String distanceFromUser, String postContent, String postImage, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser) {
-        this.userName = userName;
-        this.distanceFromUser = distanceFromUser;
-        this.postContent = postContent;
-        this.imagePath = postImage;
-        this.upVoteCount = upVoteCount;
-        this.downVoteCount = downVoteCount;
-        this.commentCount = commentCount;
-        this.type = type;
-        this.isUpVotedByUser = isUpVotedByUser;
-        this.isDownVotedByUser = isDownVotedByUser;
-    }
-
-    public Post(){
-
+        this.mediaType = mediaType;
+        this.mediaPath = mediaPath;
     }
 
     public String getUserName() {
@@ -57,8 +45,12 @@ public class Post {
         return postContent;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public String getMediaPath() {
+        return mediaPath;
     }
 
     public int getUpVoteCount() {
@@ -97,12 +89,16 @@ public class Post {
         this.distanceFromUser = distanceFromUser;
     }
 
-    public void setPostContent(String postContent) {
-        this.postContent = postContent;
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setMediaPath(String mediaPath) {
+        this.mediaPath = mediaPath;
+    }
+
+    public void setPostContent(String postContent) {
+        this.postContent = postContent;
     }
 
     public void setUpVoteCount(int upVoteCount) {
@@ -156,11 +152,66 @@ public class Post {
                 "userName='" + userName + '\'' +
                 ", distanceFromUser='" + distanceFromUser + '\'' +
                 ", postContent='" + postContent + '\'' +
-                ", postImage=" + imagePath +
+                ", mediaType='" + mediaType + '\'' +
+                ", mediaPath='" + mediaPath + '\'' +
                 ", upVoteCount=" + upVoteCount +
                 ", downVoteCount=" + downVoteCount +
                 ", commentCount=" + commentCount +
                 ", type='" + type + '\'' +
+                ", isUpVotedByUser=" + isUpVotedByUser +
+                ", isDownVotedByUser=" + isDownVotedByUser +
+                ", postId='" + postId + '\'' +
                 '}';
+    }
+
+    // Parcelable Creator
+    public static final Parcelable.Creator<Post> CREATOR = new Parcelable.Creator<Post>() {
+        @Override
+        public Post createFromParcel(Parcel in) {
+            return new Post(in);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
+
+    // Parcelable read
+    protected Post(Parcel in) {
+        userName = in.readString();
+        distanceFromUser = in.readString();
+        postContent = in.readString();
+        mediaType = in.readString();
+        mediaPath = in.readString();
+        upVoteCount = in.readInt();
+        downVoteCount = in.readInt();
+        commentCount = in.readInt();
+        type = in.readString();
+        isUpVotedByUser = in.readByte() != 0;
+        isDownVotedByUser = in.readByte() != 0;
+        postId = in.readString();
+    }
+
+    // Parcelable write
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userName);
+        dest.writeString(distanceFromUser);
+        dest.writeString(postContent);
+        dest.writeString(mediaType);
+        dest.writeString(mediaPath);
+        dest.writeInt(upVoteCount);
+        dest.writeInt(downVoteCount);
+        dest.writeInt(commentCount);
+        dest.writeString(type);
+        dest.writeByte((byte) (isUpVotedByUser ? 1 : 0));
+        dest.writeByte((byte) (isDownVotedByUser ? 1 : 0));
+        dest.writeString(postId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

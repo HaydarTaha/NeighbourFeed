@@ -16,6 +16,9 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-permission
+        android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -31,6 +34,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NeighbourFeed"
         tools:targetApi="31">
+        <activity
+            android:name=".PostPage"
+            android:exported="false" />
         <activity
             android:name=".CommentPage"
             android:exported="false" />
