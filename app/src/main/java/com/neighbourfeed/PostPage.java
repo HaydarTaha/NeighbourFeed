@@ -120,11 +120,9 @@ public class PostPage extends AppCompatActivity {
                 imageUri = post.getMediaPath();
                 StorageReference imageReference = storage.getReferenceFromUrl(imageUri);
                 ImageView imagePost = findViewById(R.id.imagePost);
-                MaterialCardView imageCard = findViewById(R.id.imagePostCard);
                 imageReference.getBytes(1024 * 1024 * 100).addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     imagePost.setImageBitmap(bitmap);
-                    imageCard.setVisibility(MaterialCardView.VISIBLE);
                     imagePost.setVisibility(ImageView.VISIBLE);
                 }).addOnFailureListener(e -> Log.d("Post", "Error getting image: " + e.getMessage()));
                 break;

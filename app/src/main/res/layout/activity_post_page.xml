@@ -1,244 +1,234 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PostPage">
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <!-- Header and Back Button -->
-    <LinearLayout
-        android:id="@+id/headerLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="start|center_vertical"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Back Button to go back to MainActivity -->
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginEnd="16dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_back"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/back" />
-
-        <!-- Header -->
-        <TextView
-            android:id="@+id/headerTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textAppearance="@style/HeaderText"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"/>
-    </LinearLayout>
-
-    <!-- User Information and User Icon -->
-    <LinearLayout
-        android:id="@+id/userInfoLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="start|center_vertical"
-        android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- User Icon -->
-        <ImageButton
-            android:id="@+id/iconUser"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginEnd="8dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_profile"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/profile" />
-
-        <!-- Username and Distance -->
+        <!-- Header and Back Button -->
         <LinearLayout
-            android:id="@+id/userInfoTextLayout"
+            android:id="@+id/headerLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
+            <!-- Back Button to go back to MainActivity -->
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_back"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/back" />
+
+            <!-- Header -->
             <TextView
-                android:id="@+id/textUsername"
+                android:id="@+id/headerTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/username"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/textDistance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/km"
-                android:textSize="20sp" />
+                android:text="@string/app_name"
+                android:textAppearance="@style/HeaderText"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"/>
         </LinearLayout>
-    </LinearLayout>
 
-    <!-- Post Media for Image or Audio -->
-    <FrameLayout
-        android:id="@+id/postMediaLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textPost">
+        <!-- User Information and User Icon -->
+        <LinearLayout
+            android:id="@+id/userInfoLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Post Image -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/imagePostCard"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:visibility="gone"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp"
-            app:cardUseCompatPadding="true">
+            <!-- User Icon -->
+            <ImageButton
+                android:id="@+id/iconUser"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_profile"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/profile" />
 
+            <!-- Username and Distance -->
+            <LinearLayout
+                android:id="@+id/userInfoTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/username"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/km"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Post Media for Image or Audio -->
+        <FrameLayout
+            android:id="@+id/postMediaLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textPost">
+
+            <!-- Post Image -->
             <ImageView
                 android:id="@+id/imagePost"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/post_image"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 android:visibility="gone" />
-        </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/audioPostCard"
-            android:layout_width="350dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp"
-            app:cardUseCompatPadding="true"
-            android:visibility="gone">
-
-            <!-- Audio Player Layout -->
-            <include
-                android:id="@+id/audioPlayerLayout"
-                layout="@layout/activity_audio_player"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:visibility="gone" />
-        </com.google.android.material.card.MaterialCardView>
-    </FrameLayout>
-
-    <!-- Post Text -->
-    <TextView
-        android:id="@+id/textPost"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/this_is_a_post_text"
-        android:textSize="24sp"
-        android:textStyle="normal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintTop_toBottomOf="@id/userInfoLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-
-    <!-- Comment, Up Vote and Down Vote -->
-    <LinearLayout
-        android:id="@+id/actionButtonsLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="start|center_vertical"
-        android:baselineAligned="false"
-        app:layout_constraintTop_toBottomOf="@id/postMediaLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp">
-
-        <!-- Comment LinearLayout -->
-        <LinearLayout
-            android:id="@+id/commentLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <!-- Comment Icon -->
-            <ImageButton
-                android:id="@+id/iconComment"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_comment"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/audioPostCard"
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:contentDescription="@string/comment" />
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp"
+                app:cardUseCompatPadding="true"
+                android:visibility="gone">
 
-            <!-- Comment Count -->
-            <TextView
-                android:id="@+id/textCommentCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/comment_count"
-                android:textSize="20sp" />
-        </LinearLayout>
+                <!-- Audio Player Layout -->
+                <include
+                    android:id="@+id/audioPlayerLayout"
+                    layout="@layout/activity_audio_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:visibility="gone" />
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        <!-- Up Vote, Down Vote and total count LinearLayout -->
+        <!-- Post Text -->
+        <TextView
+            android:id="@+id/textPost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/this_is_a_post_text"
+            android:textSize="24sp"
+            android:textStyle="normal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            app:layout_constraintTop_toBottomOf="@id/userInfoLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        <!-- Comment, Up Vote and Down Vote -->
         <LinearLayout
-            android:id="@+id/likeDislikeLayout"
+            android:id="@+id/actionButtonsLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end">
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:baselineAligned="false"
+            app:layout_constraintTop_toBottomOf="@id/postMediaLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="16dp">
 
-            <!-- Total Count -->
-            <TextView
-                android:id="@+id/totalLikeDislikeCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/total_count"
-                android:textSize="20sp"
-                android:layout_marginEnd="8dp" />
-
-            <!-- Icon LinearLayout -->
+            <!-- Comment LinearLayout -->
             <LinearLayout
-                android:id="@+id/likeDislikeIconsLayout"
+                android:id="@+id/commentLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <!-- Up Vote Icon -->
+                <!-- Comment Icon -->
                 <ImageButton
-                    android:id="@+id/upVoteIcon"
+                    android:id="@+id/iconComment"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:src="@drawable/ic_comment"
                     android:layout_marginEnd="8dp"
                     android:background="?android:attr/selectableItemBackground"
-                    android:src="@drawable/arrow_up_bold_outline"
-                    android:contentDescription="@string/like" />
+                    android:contentDescription="@string/comment" />
 
-                <!-- Down Vote Icon -->
-                <ImageButton
-                    android:id="@+id/downVoteIcon"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:src="@drawable/arrow_down_bold_outline"
-                    android:contentDescription="@string/dislike" />
+                <!-- Comment Count -->
+                <TextView
+                    android:id="@+id/textCommentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comment_count"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <!-- Up Vote, Down Vote and total count LinearLayout -->
+            <LinearLayout
+                android:id="@+id/likeDislikeLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end">
+
+                <!-- Total Count -->
+                <TextView
+                    android:id="@+id/totalLikeDislikeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_count"
+                    android:textSize="20sp"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Icon LinearLayout -->
+                <LinearLayout
+                    android:id="@+id/likeDislikeIconsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Up Vote Icon -->
+                    <ImageButton
+                        android:id="@+id/upVoteIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:src="@drawable/arrow_up_bold_outline"
+                        android:contentDescription="@string/like" />
+
+                    <!-- Down Vote Icon -->
+                    <ImageButton
+                        android:id="@+id/downVoteIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:src="@drawable/arrow_down_bold_outline"
+                        android:contentDescription="@string/dislike" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
