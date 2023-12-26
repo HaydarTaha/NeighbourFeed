@@ -479,7 +479,6 @@ public class CreatePost extends AppCompatActivity {
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 // GPS is enabled
                 Log.d("CreatePost", "controlLocation: GPS is enabled");
-                // Show a toast message
                 LocationListener locationListener = new LocationListener() {
                     @Override
                     public void onLocationChanged(@NonNull Location location) {

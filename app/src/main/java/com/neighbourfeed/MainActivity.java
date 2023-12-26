@@ -1,9 +1,13 @@
 package com.neighbourfeed;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +35,7 @@ import android.view.LayoutInflater;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore database;
     User user;
     private List<String> selectedFilterTypes = new ArrayList<>();
-
+    private GeoPoint userLocation;
+    private double latitude;
+    private double longitude;
+    private boolean locationFound = false;
 
     @Override
     protected void onStart() {
@@ -53,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         // Get from user profile
         boolean fromUserProfile = intent.getBooleanExtra("fromUserProfile", false);
 
+        database = FirebaseFirestore.getInstance();
+
         if (fromLogin || fromRegister) {
             String name = intent.getStringExtra("name");
             String email = intent.getStringExtra("email");
@@ -60,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Create user object
             user = new User(name, email, uid);
+
+            // Find user location
+            findUserLocation();
         } else if (fromUserProfile) {
             String userName = intent.getStringExtra("userName");
             String email = intent.getStringExtra("email");
@@ -67,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Create user object
             user = new User(userName, email, uid);
+
+            // Find user location
+            findUserLocation();
         }
     }
 
@@ -91,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        filterButton.setEnabled(locationFound);
+
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,9 +127,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        database = FirebaseFirestore.getInstance();
-        showPosts();
     }
 
     private void openProfile() {
@@ -207,7 +224,12 @@ public class MainActivity extends AppCompatActivity {
                         selectedFilterTypes.add(checkbox.getText().toString());
                     }
                 }
-                showPosts(); // Refresh posts with new filters
+                // Check if the user location is found
+                if (locationFound) {
+                    showPosts();
+                } else {
+                    findUserLocation();
+                }
             }
         });
 
@@ -252,7 +274,9 @@ public class MainActivity extends AppCompatActivity {
 
                             // Check if the post matches the selected filter types
                             if (selectedFilterTypes.isEmpty() || selectedFilterTypes.contains(post.getType())) {
-                                posts.add(post);
+                                if (post != null) {
+                                    posts.add(post);
+                                }
                             }
                         }
 
@@ -293,11 +317,12 @@ public class MainActivity extends AppCompatActivity {
         int upVotes = upVotedUsers.size();
         int downVotes = downVotedUsers.size();
 
-        //TODO: Calculate distance from user
-        double distance = 0.0;
-        //calculateDistanceFromUser(location);
+        //Calculate distance from user
+        GeoPoint locationGeoPoint = document.getGeoPoint("location");
+        assert locationGeoPoint != null;
+        double distance = calculateDistanceFromUser(locationGeoPoint);
         distance = Math.round(distance * 10.0) / 10.0;
-        String distanceString = Double.toString(distance);
+        String distanceString = Double.toString(distance) + " km";
 
         //Check if user has upVoted or downVoted
         boolean upVoted = false;
@@ -317,6 +342,22 @@ public class MainActivity extends AppCompatActivity {
 
         return new Post(userName, distanceString, content, upVotes, downVotes, 0, type, upVoted, downVoted, id, mediaType, mediaPath);
     }
+
+    private double calculateDistanceFromUser(GeoPoint location) {
+        Log.d("MainActivity", "User location: " + userLocation.toString());
+        Log.d("MainActivity", "Post location: " + location.toString());
+        double dLat = Math.toRadians(location.getLatitude() - userLocation.getLatitude());
+        double dLon = Math.toRadians(location.getLongitude() - userLocation.getLongitude());
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(userLocation.getLatitude())) * Math.cos(Math.toRadians(location.getLatitude())) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        final int R = 6371; // Radius of the Earth in kilometers
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
 
     private void fetchCommentsWithID(String id, Post post) {
         Log.d("Comment", "Post id: " + id);
@@ -366,9 +407,62 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Reset filters
+        selectedFilterTypes.clear();
+        // Reset location found
+        locationFound = false;
+        // Remove all posts if any
+        ListView listView = findViewById(R.id.postListView);
+        PostAdapter adapter = (PostAdapter) listView.getAdapter();
+        if (adapter != null) {
+            adapter.clear();
+        }
         // Fetch posts again
         ProgressBar progressBar = findViewById(R.id.progressBarMain);
         progressBar.setVisibility(View.VISIBLE);
-        showPosts();
+        // Check if the user location is found
+        if (locationFound) {
+            showPosts();
+        } else {
+            findUserLocation();
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void findUserLocation() {
+        // Check if the location permission is granted
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        } else {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                LocationListener locationListener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(android.location.Location location) {
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+                        userLocation = new GeoPoint(latitude, longitude);
+                        userLocation = new GeoPoint(latitude, longitude);
+                        Log.d("MainActivity", "User location: " + userLocation.toString());
+                        locationFound = true;
+                        // Stop listening for location updates
+                        locationManager.removeUpdates(this);
+                        // Enable filter button
+                        ImageButton filterButton = findViewById(R.id.filterButton);
+                        filterButton.setEnabled(true);
+                        // Show posts
+                        showPosts();
+                    }
+                };
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+            } else {
+                Toast.makeText(this, "Please enable location services", Toast.LENGTH_SHORT).show();
+                ProgressBar progressBar = findViewById(R.id.progressBarMain);
+                progressBar.setVisibility(View.GONE);
+                TextView noPost = findViewById(R.id.postEmptyView);
+                noPost.setText("Please enable location services");
+                noPost.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

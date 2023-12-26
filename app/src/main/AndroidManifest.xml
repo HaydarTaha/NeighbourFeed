@@ -38,12 +38,6 @@
             android:name=".CommentPage"
             android:exported="false" />
         <activity
-            android:name=".CommentAdapter"
-            android:exported="false" />
-        <activity
-            android:name=".PostAdapter"
-            android:exported="false" />
-        <activity
             android:name=".UserProfile"
             android:exported="false" />
         <activity
