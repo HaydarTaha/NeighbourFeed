@@ -1,7 +1,10 @@
 package com.neighbourfeed;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 public class PostAdapter extends ArrayAdapter<Post> {
@@ -46,6 +50,8 @@ public class PostAdapter extends ArrayAdapter<Post> {
         ImageButton commentButton = listItemView.findViewById(R.id.iconComment);
         TextView commentCount = listItemView.findViewById(R.id.textCommentCount);
         TextView totalLikes = listItemView.findViewById(R.id.totalLikeDislikeCount);
+        ImageButton mapButton = listItemView.findViewById(R.id.iconOpenMap);
+        TextView textCreatedAt = listItemView.findViewById(R.id.textCreatedAt);
 
         listItemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +70,9 @@ public class PostAdapter extends ArrayAdapter<Post> {
         textPost.setText(currentPost.getPostContent());
         commentCount.setText(String.valueOf(currentPost.getCommentCount()));
         calculateTotalVotes(currentPost, totalLikes);
+
+        //Set createdAt text
+        textCreatedAt.setText(currentPost.getPostDate());
 
         upVoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +169,17 @@ public class PostAdapter extends ArrayAdapter<Post> {
             }
         });
 
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open Google Maps with marker on the location of the post
+                Uri gmmIntentUri = Uri.parse("geo:" + currentPost.getLatitude() + "," + currentPost.getLongitude() + "?q=" + currentPost.getLatitude() + "," + currentPost.getLongitude() + "(" + currentPost.getPostContent() + ")");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                getContext().startActivity(mapIntent);
+            }
+        });
+
         return listItemView;
     }
 
@@ -247,6 +267,9 @@ public class PostAdapter extends ArrayAdapter<Post> {
         intent.putExtra("isLiked", currentPost.isUpVotedByUser());
         intent.putExtra("isDisliked", currentPost.isDownVotedByUser());
         intent.putExtra("totalVotes", currentPost.getUpVoteCount() - currentPost.getDownVoteCount());
+        intent.putExtra("createDate", currentPost.getPostDate());
+        intent.putExtra("latitude", currentPost.getLatitude());
+        intent.putExtra("longitude", currentPost.getLongitude());
         getContext().startActivity(intent);
     }
 }

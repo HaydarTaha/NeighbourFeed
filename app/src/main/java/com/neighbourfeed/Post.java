@@ -17,8 +17,11 @@ public class Post implements Parcelable {
     private boolean isUpVotedByUser;
     private boolean isDownVotedByUser;
     private String postId;
+    private String postDate;
+    private double latitude;
+    private double longitude;
 
-    public Post(String userName, String distanceFromUser, String postContent, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser, String postId, String mediaType, String mediaPath) {
+    public Post(String userName, String distanceFromUser, String postContent, int upVoteCount, int downVoteCount, int commentCount, String type, boolean isUpVotedByUser, boolean isDownVotedByUser, String postId, String mediaType, String mediaPath, String postDate, double latitude, double longitude) {
         this.userName = userName;
         this.distanceFromUser = distanceFromUser;
         this.postContent = postContent;
@@ -31,6 +34,9 @@ public class Post implements Parcelable {
         this.postId = postId;
         this.mediaType = mediaType;
         this.mediaPath = mediaPath;
+        this.postDate = postDate;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getUserName() {
@@ -213,5 +219,29 @@ public class Post implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public String getPostDate() {
+        return postDate;
+    }
+
+    public void setPostDate(String postDate) {
+        this.postDate = postDate;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }
