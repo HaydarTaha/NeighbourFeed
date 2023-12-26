@@ -122,6 +122,7 @@ public class PostPage extends AppCompatActivity {
                 ImageView imagePost = findViewById(R.id.imagePost);
                 imageReference.getBytes(1024 * 1024 * 100).addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    bitmap = resizeBitmap(bitmap);
                     imagePost.setImageBitmap(bitmap);
                     imagePost.setVisibility(ImageView.VISIBLE);
                 }).addOnFailureListener(e -> Log.d("Post", "Error getting image: " + e.getMessage()));
@@ -153,6 +154,15 @@ public class PostPage extends AppCompatActivity {
                 Log.d("Post", "No media");
                 break;
         }
+    }
+
+    private Bitmap resizeBitmap(Bitmap bitmap) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        // Secure the aspect ratio
+        int newWidth = 1080;
+        int newHeight = (height * newWidth) / width;
+        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
     }
 
     private void openCommentPage(String postId) {
