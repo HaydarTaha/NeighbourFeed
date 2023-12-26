@@ -244,6 +244,9 @@ public class PostAdapter extends ArrayAdapter<Post> {
         intent.putExtra("postId", currentPost.getPostId());
         intent.putExtra("userName", userName);
         intent.putExtra("post", currentPost);
+        intent.putExtra("isLiked", currentPost.isUpVotedByUser());
+        intent.putExtra("isDisliked", currentPost.isDownVotedByUser());
+        intent.putExtra("totalVotes", currentPost.getUpVoteCount() - currentPost.getDownVoteCount());
         getContext().startActivity(intent);
     }
 }
