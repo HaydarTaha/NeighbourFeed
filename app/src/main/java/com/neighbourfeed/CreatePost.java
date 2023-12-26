@@ -2,9 +2,10 @@ package com.neighbourfeed;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -43,9 +44,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,6 +77,8 @@ public class CreatePost extends AppCompatActivity {
     private Thread musicThread;
     private double latitude;
     private double longitude;
+    private String imageSource;
+    private boolean locationIsFound = false;
 
     @Override
     protected void onStart() {
@@ -84,6 +87,7 @@ public class CreatePost extends AppCompatActivity {
         userName = intent.getStringExtra("userName");
         database = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+        controlLocation();
         Log.d("CreatePost", "onStart: " + userName);
     }
 
@@ -104,7 +108,6 @@ public class CreatePost extends AppCompatActivity {
         Button takePhoto = findViewById(R.id.selectImageCamera);
         Button selectImage = findViewById(R.id.selectImageGallery);
         Button recordAudio = findViewById(R.id.startRecording);
-        Button controlLocation = findViewById(R.id.updateLocation);
 
         // Type of post
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.filter_types, android.R.layout.simple_spinner_item);
@@ -126,7 +129,9 @@ public class CreatePost extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 // Check if the EditText has text and enable/disable the button accordingly
-                addPost.setEnabled(!editable.toString().trim().isEmpty());
+                if (locationIsFound) {
+                    addPost.setEnabled(!editable.toString().trim().isEmpty());
+                }
             }
         });
 
@@ -150,6 +155,8 @@ public class CreatePost extends AppCompatActivity {
                 File file = new File(Objects.requireNonNull(mediaUri));
                 boolean deleted = file.delete();
 
+                imageSource = null;
+
                 mediaType = null;
 
                 // Return from the method (this might not be necessary depending on the context)
@@ -158,6 +165,7 @@ public class CreatePost extends AppCompatActivity {
 
             try {
                 mediaType = "image";
+                imageSource = "camera";
                 takePhoto();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -181,11 +189,13 @@ public class CreatePost extends AppCompatActivity {
                 isMedia = false;
 
                 mediaType = null;
+                imageSource = null;
 
                 // Return from the method (this might not be necessary depending on the context)
                 return;
             }
             mediaType = "image";
+            imageSource = "gallery";
             selectImage();
         });
 
@@ -236,10 +246,8 @@ public class CreatePost extends AppCompatActivity {
                     }
                 });
 
-        controlLocation.setOnClickListener(v -> {
-            controlLocation();
-        });
-
+        // Add a listener to addPost button, to control the location is location is found, if not, disable the button, after location is found, enable the button
+        addPost.setEnabled(locationIsFound);
         addPost.setOnClickListener(v -> addPost());
     }
 
@@ -302,6 +310,7 @@ public class CreatePost extends AppCompatActivity {
         } else if (requestCode == GALLERY_PERMISSION_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 mediaUri = Objects.requireNonNull(data.getData()).toString();
+                Log.d("CreatePost", "onActivityResult: " + mediaUri);
                 ImageView imageView = findViewById(R.id.postAddImage);
                 imageView.setVisibility(View.VISIBLE);
                 imageView.setImageURI(Uri.parse(mediaUri));
@@ -478,6 +487,9 @@ public class CreatePost extends AppCompatActivity {
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
                         Toast.makeText(CreatePost.this, "Location updated. Latitude: " + latitude + " Longitude: " + longitude, Toast.LENGTH_SHORT).show();
+                        locationIsFound = true;
+                        Button addPost = findViewById(R.id.addPost);
+                        addPost.setEnabled(!((EditText) findViewById(R.id.postText)).getText().toString().trim().isEmpty());
                         // Stop the location service
                         locationManager.removeUpdates(this);
                     }
@@ -492,13 +504,6 @@ public class CreatePost extends AppCompatActivity {
         }
     }
 
-    private GeoPoint getLocation() {
-        if (latitude == 0.0 && longitude == 0.0) {
-            controlLocation();
-        }
-        return new GeoPoint(latitude, longitude);
-    }
-
     private void addPost() {
         try {
             database = FirebaseFirestore.getInstance();
@@ -509,7 +514,7 @@ public class CreatePost extends AppCompatActivity {
             // Get the post type
             Timestamp timestamp = new Timestamp(new Date());
             ArrayList<String> downVotedUsers = new ArrayList<>();
-            GeoPoint geoPoint = getLocation();
+            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
             String mediaPath = null;
             if (mediaUri != null) {
                 mediaPath = "mediaPath";
@@ -547,18 +552,33 @@ public class CreatePost extends AppCompatActivity {
                 if (mediaUri != null) {
                     StorageReference storageRef = storage.getReference();
                     if (mediaType.equals("image")) {
-                        String imagePath = "Posts/" + documentReference.getId() + "/image.jpg";
-                        StorageReference imageRef = storageRef.child(imagePath);
-                        Uri file = Uri.fromFile(new File(mediaUri));
-                        imageRef.putFile(file)
-                                .addOnSuccessListener(taskSnapshot -> {
-                                    Log.d("CreatePost", "Image uploaded successfully");
-                                    String remoteUri = "gs://neighbourfeed.appspot.com/Posts/" + documentReference.getId() + "/image.jpg";
-                                    database.collection("Posts").document(documentReference.getId()).update("mediaPath", remoteUri);
-                                    Toast.makeText(CreatePost.this, "Post added successfully", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                })
-                                .addOnFailureListener(e -> Log.d("CreatePost", "Error uploading image", e));
+                        if (imageSource.equals("camera")) {
+                            String imagePath = "Posts/" + documentReference.getId() + "/image.jpg";
+                            StorageReference imageRef = storageRef.child(imagePath);
+                            Uri file = Uri.fromFile(new File(mediaUri));
+                            imageRef.putFile(file)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        Log.d("CreatePost", "Image uploaded successfully");
+                                        String remoteUri = "gs://neighbourfeed.appspot.com/Posts/" + documentReference.getId() + "/image.jpg";
+                                        database.collection("Posts").document(documentReference.getId()).update("mediaPath", remoteUri);
+                                        Toast.makeText(CreatePost.this, "Post added successfully", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> Log.d("CreatePost", "Error uploading image", e));
+                        } else if (imageSource.equals("gallery")) {
+                            String imagePath = "Posts/" + documentReference.getId() + "/image.jpg";
+                            StorageReference imageRef = storageRef.child(imagePath);
+                            Uri file = Uri.parse(mediaUri);
+                            imageRef.putFile(file)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        Log.d("CreatePost", "Image uploaded successfully");
+                                        String remoteUri = "gs://neighbourfeed.appspot.com/Posts/" + documentReference.getId() + "/image.jpg";
+                                        database.collection("Posts").document(documentReference.getId()).update("mediaPath", remoteUri);
+                                        Toast.makeText(CreatePost.this, "Post added successfully", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> Log.d("CreatePost", "Error uploading image", e));
+                        }
                     } else if (mediaType.equals("audio")) {
                         String audioPath = "Posts/" + documentReference.getId() + "/audio.3gp";
                         StorageReference audioRef = storageRef.child(audioPath);
