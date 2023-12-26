@@ -74,7 +74,6 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-
         toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             //Create a TextView object and display the selected button's text in the LinearLayout
             if (isChecked) {
@@ -125,9 +124,45 @@ public class UserProfile extends AppCompatActivity {
                                 }
                             });
                 } else if (checkedId == R.id.btnUpVotes) {
-                    textView.setText("Up Votes");
+                    textView.setText("Up voted Posts");
+                    db.collection("Posts")
+                            .whereArrayContains("upVotedUsers", userName) // userName alanına göre filtreleme
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                        String postContent = document.getString("content");
+
+                                        if (postContent != null) {
+                                            TextView postTextView = new TextView(getApplicationContext());
+                                            postTextView.setText(postContent);
+                                            linearLayoutPosts.addView(postTextView);
+                                        }
+                                    }
+                                } else {
+                                    Log.d("UserProfile", "Error getting documents: ", task.getException());
+                                }
+                            });
                 } else if (checkedId == R.id.btnDownVotes) {
-                    textView.setText("Down Votes");
+                    textView.setText("Down voted Posts");
+                    db.collection("Posts")
+                            .whereArrayContains("downVotedUsers", userName)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                        String postContent = document.getString("content");
+
+                                        if (postContent != null) {
+                                            TextView postTextView = new TextView(getApplicationContext());
+                                            postTextView.setText(postContent);
+                                            linearLayoutPosts.addView(postTextView);
+                                        }
+                                    }
+                                } else {
+                                    Log.d("UserProfile", "Error getting documents: ", task.getException());
+                                }
+                            });
                 }
                 //Add the TextView to the LinearLayout if the linearLayoutPosts is not empty then remove all the views
                 if (linearLayoutPosts.getChildCount() > 0) {
