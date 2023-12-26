@@ -1,122 +1,195 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Scroll View for the whole layout -->
+<ScrollView android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Header and Back Button -->
-    <LinearLayout
-        android:id="@+id/headerLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="start|center_vertical"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <!-- Constraint Layout for the whole layout -->
 
-        <!-- Back Button to go back to MainActivity -->
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Header and Back Button -->
+        <LinearLayout
+            android:id="@+id/headerLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Back Button to go back to MainActivity -->
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_back"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/back" />
+
+            <!-- Header -->
+            <TextView
+                android:id="@+id/headerTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textAppearance="@style/HeaderText"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+
+        <!-- Buttons for Image Selection -->
+        <Button
+            android:id="@+id/selectImageCamera"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:padding="15dp"
+            android:text="@string/take_photo"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/selectImageGallery"
+            app:layout_constraintHorizontal_bias="0.5"/>
+
+        <Button
+            android:id="@+id/selectImageGallery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_back"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/back" />
+            android:padding="15dp"
+            android:text="@string/select_from_gallery"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
+            app:layout_constraintStart_toEndOf="@id/selectImageCamera"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Header -->
-        <TextView
-            android:id="@+id/headerTextView"
+        <!-- Post Media for Image or Audio, width and height are set to contain the image -->
+        <FrameLayout
+            android:id="@+id/postMediaLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textAppearance="@style/HeaderText"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"/>
-    </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/selectImageGallery"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Existing layout elements below the header -->
-    <Button
-        android:padding="15dp"
-        android:id="@+id/btnSelectImageCamera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Take Photo"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"/>
+            <!-- Post Add Image, width and height are set to contain the image -->
+            <ImageView
+                android:id="@+id/postAddImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/post_image"
+                android:visibility="gone" />
 
-    <Button
-        android:padding="15dp"
-        android:id="@+id/btnSelectFromGallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select from Gallery"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintStart_toEndOf="@id/btnSelectImageCamera"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"/>
+            <!-- Post Add Audio -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/postAddAudio"
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp"
+                app:cardUseCompatPadding="true"
+                android:visibility="gone">
 
-    <EditText
-        android:id="@+id/editTextPostText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/btnSelectImageCamera"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="15dp"
-        android:hint="Enter text for your post" />
+                <!-- Audio Player Layout -->
+                <include
+                    android:id="@+id/audioPlayerLayout"
+                    layout="@layout/activity_audio_player"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" />
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-    <Button
-        android:id="@+id/btnStartRecording"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Recording"
-        app:layout_constraintTop_toBottomOf="@id/editTextPostText"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="32dp"
-        android:padding="15dp"
-        android:layout_marginStart="16dp"
-        />
+        <!-- EditText for Post Text -->
+        <EditText
+            android:id="@+id/postText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:padding="15dp"
+            android:hint="@string/enter_your_post_text_here"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:lines="5"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            app:layout_constraintTop_toBottomOf="@id/postMediaLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:autofillHints="" />
 
-    <Button
-        android:id="@+id/btnLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Report Location"
-        app:layout_constraintTop_toBottomOf="@id/editTextPostText"
-        app:layout_constraintStart_toEndOf="@id/btnStartRecording"
-        android:layout_marginTop="32dp"
-        android:padding="15dp"
-        android:layout_marginStart="16dp"
-        />
+        <!-- Buttons for Recording and Location -->
+        <Button
+            android:id="@+id/startRecording"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="16dp"
+            android:padding="15dp"
+            android:text="@string/start_recording"
+            app:layout_constraintTop_toBottomOf="@id/postText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/updateLocation"
+            app:layout_constraintHorizontal_bias="0.5"/>
 
-    <Spinner
-        android:id="@+id/spinnerPostType"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/btnStartRecording"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:padding="15dp" />
+        <Button
+            android:id="@+id/updateLocation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:padding="15dp"
+            android:text="@string/control_location"
+            app:layout_constraintTop_toBottomOf="@id/postText"
+            app:layout_constraintStart_toEndOf="@id/startRecording"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"/>
 
-    <Button
-        android:id="@+id/btnAddPost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Post"
-        app:layout_constraintTop_toBottomOf="@id/spinnerPostType"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"
-        android:padding="15dp" />
+        <!-- Spinner for Post Type -->
+        <Spinner
+            android:id="@+id/postType"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:padding="15dp"
+            app:layout_constraintTop_toBottomOf="@id/updateLocation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Button for Adding Post -->
+        <Button
+            android:id="@+id/addPost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:padding="15dp"
+            android:text="@string/add_post"
+            app:layout_constraintTop_toBottomOf="@id/postType"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            android:enabled="false" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

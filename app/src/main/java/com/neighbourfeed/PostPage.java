@@ -2,6 +2,7 @@ package com.neighbourfeed;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,6 +37,7 @@ public class PostPage extends AppCompatActivity {
     String userName;
     boolean playPause = false;
     MediaPlayer mediaPlayer;
+    Thread musicThread;
 
     @Override
     protected void onStart() {
@@ -119,7 +121,7 @@ public class PostPage extends AppCompatActivity {
                 StorageReference imageReference = storage.getReferenceFromUrl(imageUri);
                 ImageView imagePost = findViewById(R.id.imagePost);
                 MaterialCardView imageCard = findViewById(R.id.imagePostCard);
-                imageReference.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
+                imageReference.getBytes(1024 * 1024 * 100).addOnSuccessListener(bytes -> {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     imagePost.setImageBitmap(bitmap);
                     imageCard.setVisibility(MaterialCardView.VISIBLE);
@@ -131,7 +133,7 @@ public class PostPage extends AppCompatActivity {
                 StorageReference audioReference = storage.getReferenceFromUrl(audioUri);
                 View audioPost = findViewById(R.id.audioPlayerLayout);
                 MaterialCardView audioCard = findViewById(R.id.audioPostCard);
-                audioReference.getBytes(1024 * 1024).addOnSuccessListener(bytes -> {
+                audioReference.getBytes(1024 * 1024 * 100).addOnSuccessListener(bytes -> {
                     audioCard.setVisibility(MaterialCardView.VISIBLE);
                     audioPost.setVisibility(View.VISIBLE);
                     ImageButton playPauseButton = findViewById(R.id.playPauseButton);
@@ -139,7 +141,7 @@ public class PostPage extends AppCompatActivity {
                         // Change play icon to pause icon
                         if (playPause) {
                             playPauseButton.setImageResource(R.drawable.ic_play);
-                            stopMediaPlayer();
+                            pauseMediaPlayer();
                             playPause = false;
                         } else {
                             playPauseButton.setImageResource(R.drawable.ic_pause);
@@ -182,19 +184,24 @@ public class PostPage extends AppCompatActivity {
                                 seekBar.setMax(mediaPlayer.getDuration());
 
                                 // Update SeekBar progress and current duration
-                                new Thread(() -> {
-                                    while (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                musicThread = new Thread(() -> {
+                                    while (mediaPlayer != null) {
                                         try {
-                                            Thread.sleep(1000);
-                                            runOnUiThread(() -> {
+                                            if (mediaPlayer.isPlaying()) {
                                                 seekBar.setProgress(mediaPlayer.getCurrentPosition());
-                                                updateCurrentDuration();
-                                            });
+                                                runOnUiThread(this::updateCurrentDuration);
+                                                Thread.sleep(1000);
+                                            } else {
+                                                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                                                runOnUiThread(this::updateCurrentDuration);
+                                                Thread.sleep(1000);
+                                            }
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
                                     }
-                                }).start();
+                                });
+                                musicThread.start();
 
                                 mediaPlayer.setOnCompletionListener(mp -> {
                                     // Playback completed actions
@@ -221,6 +228,7 @@ public class PostPage extends AppCompatActivity {
         currentDurationTextView.setText(formatDuration(mediaPlayer.getCurrentPosition()));
     }
 
+    @SuppressLint("DefaultLocale")
     private String formatDuration(int durationInMillis) {
         int seconds = durationInMillis / 1000;
         int minutes = seconds / 60;
@@ -228,13 +236,22 @@ public class PostPage extends AppCompatActivity {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-
+    private void pauseMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
+    }
 
     private void stopMediaPlayer() {
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
+            try {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
+                musicThread.interrupt();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

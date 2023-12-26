@@ -360,6 +360,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void openCreatePost() {
         Intent intent = new Intent(this, CreatePost.class);
+        intent.putExtra("userName", user.getUserName());
         startActivity(intent);
     }
 
