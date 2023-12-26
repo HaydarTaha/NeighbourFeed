@@ -35,4 +35,5 @@
     <string name="start_recording">Start Recording</string>
     <string name="control_location">Control Location</string>
     <string name="add_post">Add Post</string>
+    <string name="userLayoutTextHeader">userLayoutTextHeader</string>
 </resources>
