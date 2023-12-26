@@ -99,6 +99,7 @@ public class UserProfile extends AppCompatActivity {
         ProgressBar progressBar = findViewById(R.id.progressBarUserProfile);
         ListView postListView = findViewById(R.id.postListView);
         profileButton.setClickable(false);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView textViewNoPosts = findViewById(R.id.textViewNoPosts);
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -112,7 +113,6 @@ public class UserProfile extends AppCompatActivity {
         toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             progressBar.setVisibility(View.VISIBLE);
             if (isChecked) {
-                progressBar.setVisibility(View.INVISIBLE);
                 textViewHeaderUserProfile.setVisibility(View.VISIBLE);
                 if (checkedId == R.id.btnPosts) {
                     textViewHeaderUserProfile.setText("Posts");
@@ -135,10 +135,18 @@ public class UserProfile extends AppCompatActivity {
                     userDownVotedPosts = new ArrayList<>();
                     getDownVotedPosts();
                 }
+                textViewNoPosts.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.GONE);
+            } else {
+                textViewHeaderUserProfile.setVisibility(View.INVISIBLE);
+                textViewNoPosts.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.GONE);
+                postListView.setAdapter(null);
             }
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void getPosts() {
         if (db == null) {
             db = FirebaseFirestore.getInstance();
@@ -166,6 +174,9 @@ public class UserProfile extends AppCompatActivity {
                             listView.setAdapter(adapter);
                         }else {
                             Log.d("Post", "Post list is empty");
+                            TextView textViewNoPosts = findViewById(R.id.textViewNoPosts);
+                            textViewNoPosts.setVisibility(View.VISIBLE);
+                            textViewNoPosts.setText("This user has no posts");
                         }
                     } else {
                         Log.d("UserProfile", "Error getting documents: ", task.getException());
@@ -176,6 +187,7 @@ public class UserProfile extends AppCompatActivity {
         postListView.setAdapter(adapter);
     }
 
+    @SuppressLint("SetTextI18n")
     private void getComments() {
         db.collection("Comments")
                 .get()
@@ -212,11 +224,15 @@ public class UserProfile extends AppCompatActivity {
                             listView.setAdapter(adapter);
                         } else {
                             Log.d("Comment", "Comment list is empty");
+                            TextView textViewNoPosts = findViewById(R.id.textViewNoPosts);
+                            textViewNoPosts.setVisibility(View.VISIBLE);
+                            textViewNoPosts.setText("This user has no comments");
                         }
                     }
                 });
     }
 
+    @SuppressLint("SetTextI18n")
     private void getUpVotedPosts() {
         db.collection("Posts")
                 .whereArrayContains("upVotedUsers", userName)
@@ -241,6 +257,9 @@ public class UserProfile extends AppCompatActivity {
                             listView.setAdapter(adapter);
                         }else {
                             Log.d("Post", "Post list is empty");
+                            TextView textViewNoPosts = findViewById(R.id.textViewNoPosts);
+                            textViewNoPosts.setVisibility(View.VISIBLE);
+                            textViewNoPosts.setText("This user has no up voted posts");
                         }
                     } else {
                         Log.d("UserProfile", "Error getting documents: ", task.getException());
@@ -251,6 +270,7 @@ public class UserProfile extends AppCompatActivity {
                 postListView.setAdapter(adapter);
     }
 
+    @SuppressLint("SetTextI18n")
     private void getDownVotedPosts() {
         db.collection("Posts")
                 .whereArrayContains("downVotedUsers", userName)
@@ -275,6 +295,9 @@ public class UserProfile extends AppCompatActivity {
                             listView.setAdapter(adapter);
                         }else {
                             Log.d("Post", "Post list is empty");
+                            TextView textViewNoPosts = findViewById(R.id.textViewNoPosts);
+                            textViewNoPosts.setVisibility(View.VISIBLE);
+                            textViewNoPosts.setText("This user has no down voted posts");
                         }
                     } else {
                         Log.d("UserProfile", "Error getting documents: ", task.getException());

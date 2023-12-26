@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore database;
     User user;
     private List<String> selectedFilterTypes = new ArrayList<>();
+    private int selectedDistance = 10;
     private GeoPoint userLocation;
     private double latitude;
     private double longitude;
@@ -224,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int selectedDistance = distanceSeekBar.getProgress();
+                selectedDistance = distanceSeekBar.getProgress();
                 selectedFilterTypes.clear(); // Clear previous filters
                 for (CheckBox checkbox : checkBoxes) {
                     if (checkbox.isChecked()) {
@@ -281,8 +282,15 @@ public class MainActivity extends AppCompatActivity {
 
                             // Check if the post matches the selected filter types
                             if (selectedFilterTypes.isEmpty() || selectedFilterTypes.contains(post.getType())) {
-                                if (post != null) {
-                                    posts.add(post);
+                                // Check if the post is within the selected distance
+                                double latitude = post.getLatitude();
+                                double longitude = post.getLongitude();
+                                GeoPoint postLocation = new GeoPoint(latitude, longitude);
+                                double distance = calculateDistanceFromUser(postLocation);
+                                if (distance <= selectedDistance) {
+                                    if (post != null) {
+                                        posts.add(post);
+                                    }
                                 }
                             }
                         }
