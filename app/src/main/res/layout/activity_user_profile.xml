@@ -96,6 +96,7 @@
         android:layout_below="@id/toggleGroup"
         android:layout_marginTop="16dp">
         <TextView
+            android:id="@+id/textViewHeaderUserProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/userLayoutTextHeader"
@@ -106,8 +107,17 @@
         <ListView
             android:id="@+id/postListView"
             android:layout_width="wrap_content"
-            android:layout_height="632dp"
+            android:layout_height="wrap_content"
             android:divider="@null"
             android:dividerHeight="0dp" />
     </LinearLayout>
+
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/progressBarUserProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="?android:attr/colorControlActivated"
+        android:visibility="gone" />
 </RelativeLayout>

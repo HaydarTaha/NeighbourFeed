@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         ProgressBar progressBar = findViewById(R.id.progressBarMain);
         progressBar.setVisibility(View.VISIBLE);
 
+        profileButton.setEnabled(locationFound);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        createPostButton.setEnabled(locationFound);
         createPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("userName", user.getUserName());
         intent.putExtra("email", user.getEmail());
         intent.putExtra("uid", user.getUid());
+        intent.putExtra("latitude", userLocation.getLatitude());
+        intent.putExtra("longitude", userLocation.getLongitude());
         startActivity(intent);
     }
 
@@ -257,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
             ProgressBar progressBar = findViewById(R.id.progressBarMain);
             progressBar.setVisibility(View.GONE);
         }
-        PostAdapter adapter = new PostAdapter(this, posts, null);
+        PostAdapter adapter = new PostAdapter(this, posts, user.getUserName());
         listView.setAdapter(adapter);
     }
 
@@ -294,8 +298,8 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Post", "Post list is empty");
 
                             noPost.setVisibility(View.VISIBLE);
-                            noPost.setText("No post yet");}
-
+                            noPost.setText("No post yet");
+                        }
                     } else {
                         Log.d("MainActivity", "Error getting documents: ", task.getException());
                     }
@@ -458,6 +462,12 @@ public class MainActivity extends AppCompatActivity {
                         // Enable filter button
                         ImageButton filterButton = findViewById(R.id.filterButton);
                         filterButton.setEnabled(true);
+                        // Enable profile button
+                        ImageButton profileButton = findViewById(R.id.profileButton);
+                        profileButton.setEnabled(true);
+                        // Enable create post button
+                        ImageButton createPostButton = findViewById(R.id.createPostButton);
+                        createPostButton.setEnabled(true);
                         // Show posts
                         showPosts();
                     }

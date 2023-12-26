@@ -38,6 +38,8 @@ public class CommentPage extends AppCompatActivity {
     ArrayList<Comment> comments;
     String userName;
     CommentAdapter adapter;
+    double latitude;
+    double longitude;
 
     @Override
     protected void onStart() {
@@ -45,6 +47,8 @@ public class CommentPage extends AppCompatActivity {
         Intent intent = getIntent();
         postId = intent.getStringExtra("postId");
         userName = intent.getStringExtra("userName");
+        latitude = intent.getDoubleExtra("latitude", 0);
+        longitude = intent.getDoubleExtra("longitude", 0);
         Log.d("Comment", "onStart: " + postId);
         database = FirebaseFirestore.getInstance();
         fetchComments();
@@ -117,7 +121,7 @@ public class CommentPage extends AppCompatActivity {
                                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                                     String dateString = sdf.format(commentDate);
 
-                                    Comment comment = new Comment(userName, content, dateString);
+                                    Comment comment = new Comment(userName, content, dateString, postId);
                                     comments.add(comment);
                                 }
                             }
@@ -125,7 +129,7 @@ public class CommentPage extends AppCompatActivity {
                             if (!comments.isEmpty()) {
                                 ProgressBar progressBar = findViewById(R.id.progressBarComment);
                                 progressBar.setVisibility(View.GONE);
-                                adapter = new CommentAdapter(this, comments);
+                                adapter = new CommentAdapter(this, comments, false, userName, latitude, longitude);
                                 ListView listView = findViewById(R.id.commentListView);
                                 listView.setAdapter(adapter);
                             } else {
@@ -186,7 +190,7 @@ public class CommentPage extends AppCompatActivity {
                         if (commentList != null) {
                             commentList.add(newComment);
                             postRef.update("comments", commentList);
-                            comments.add(new Comment(userName, commentText, timestamp.toDate().toString()));
+                            comments.add(new Comment(userName, commentText, timestamp.toDate().toString(), postId));
                             adapter.notifyDataSetChanged();
                             ListView listView = findViewById(R.id.commentListView);
                             listView.setSelection(adapter.getCount() - 1);
@@ -228,8 +232,8 @@ public class CommentPage extends AppCompatActivity {
                             noComments.setVisibility(View.GONE);
                             // Create a new adapter and set it to the ListView
                             comments = new ArrayList<>();
-                            comments.add(new Comment(userName, commentText, timestamp.toDate().toString()));
-                            adapter = new CommentAdapter(CommentPage.this, comments);
+                            comments.add(new Comment(userName, commentText, timestamp.toDate().toString(), postId));
+                            adapter = new CommentAdapter(CommentPage.this, comments, false, userName, latitude, longitude);
                             ListView listView = findViewById(R.id.commentListView);
                             listView.setAdapter(adapter);
                         }
