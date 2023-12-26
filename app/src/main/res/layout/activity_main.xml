@@ -35,6 +35,13 @@
         android:indeterminateTint="?android:attr/colorControlActivated"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/postEmptyView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textAppearance="@style/HeaderText"
+        android:visibility="gone" />
     <!-- Footer -->
     <LinearLayout
         android:id="@+id/footerLayout"
@@ -85,5 +92,12 @@
             android:stateListAnimator="@null"
             android:focusable="true" />
 
+
     </LinearLayout>
+
+
+
 </RelativeLayout>
+
+
+

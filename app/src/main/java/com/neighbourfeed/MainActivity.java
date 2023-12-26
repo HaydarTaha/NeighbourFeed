@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseFirestore database;
     User user;
+    private List<String> selectedFilterTypes = new ArrayList<>();
+
 
     @Override
     protected void onStart() {
@@ -199,17 +201,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int selectedDistance = distanceSeekBar.getProgress();
-                StringBuilder selectedTypes = new StringBuilder();
-
+                selectedFilterTypes.clear(); // Clear previous filters
                 for (CheckBox checkbox : checkBoxes) {
                     if (checkbox.isChecked()) {
-                        selectedTypes.append(checkbox.getText()).append(", ");
+                        selectedFilterTypes.add(checkbox.getText().toString());
                     }
                 }
-
-                Toast.makeText(MainActivity.this, "Distance: " + selectedDistance + " km, Types: " + selectedTypes, Toast.LENGTH_SHORT).show();
+                showPosts(); // Refresh posts with new filters
             }
         });
+
 
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -236,42 +237,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchPosts(ArrayList<Post> posts) {
-        //Fetch posts from firebase database
+        TextView noPost = findViewById(R.id.postEmptyView);
+        noPost.setVisibility(View.INVISIBLE);
+        // Fetch posts from firebase database
         database.collection("Posts")
                 .get()
                 .addOnCompleteListener(task -> {
-                    // Get top 10 posts from database if not empty and size is greater than 10
                     if (task.isSuccessful()) {
-                        if (!task.getResult().isEmpty() && task.getResult().size() > 10) {
-                            for (int i = 0; i < 10; i++) {
-                                DocumentSnapshot document = task.getResult().getDocuments().get(i);
-                                Post post = processPostData(document);
-                                fetchCommentsWithID(document.getId(), post);
-                                Log.d("MainActivity", "Post: " + post.toString());
-                                posts.add(post);
-                            }
-                        } else {
-                            for (int i = 0; i < task.getResult().size(); i++) {
-                                DocumentSnapshot document = task.getResult().getDocuments().get(i);
-                                Post post = processPostData(document);
-                                fetchCommentsWithID(document.getId(), post);
-                                Log.d("MainActivity", "Post: " + post.toString());
+                        // Process fetched posts and apply filters
+                        for (int i = 0; i < task.getResult().size(); i++) {
+                            DocumentSnapshot document = task.getResult().getDocuments().get(i);
+                            Post post = processPostData(document);
+                            fetchCommentsWithID(document.getId(), post);
+
+                            // Check if the post matches the selected filter types
+                            if (selectedFilterTypes.isEmpty() || selectedFilterTypes.contains(post.getType())) {
                                 posts.add(post);
                             }
                         }
-                        //After fetching posts, update the list view in the UI
+
+                        // Update the UI after fetching and filtering posts
                         if (!posts.isEmpty()) {
                             ProgressBar progressBar = findViewById(R.id.progressBarMain);
                             progressBar.setVisibility(View.GONE);
                             PostAdapter adapter = new PostAdapter(this, posts, user.getUserName());
                             ListView listView = findViewById(R.id.postListView);
                             listView.setAdapter(adapter);
-                        }
+                        }else {
+                            Log.d("Post", "Post list is empty");
+
+                            noPost.setVisibility(View.VISIBLE);
+                            noPost.setText("No post yet");}
+
                     } else {
                         Log.d("MainActivity", "Error getting documents: ", task.getException());
                     }
+
                 });
     }
+
 
     private Post processPostData(DocumentSnapshot document) {
         String content = document.getString("content");
@@ -309,11 +313,6 @@ public class MainActivity extends AppCompatActivity {
                 downVoted = true;
                 break;
             }
-        }
-
-        // Check if post has no media
-        if (mediaPath == null) {
-            mediaPath = "";
         }
 
         return new Post(userName, distanceString, content, upVotes, downVotes, 0, type, upVoted, downVoted, id, mediaType, mediaPath);
