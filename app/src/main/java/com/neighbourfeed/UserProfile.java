@@ -114,6 +114,13 @@ public class UserProfile extends AppCompatActivity {
                                                         TextView commentTextView = new TextView(getApplicationContext());
                                                         commentTextView.setText(commentContent);
                                                         linearLayoutPosts.addView(commentTextView);
+
+                                                        commentTextView.setOnClickListener(v -> {
+                                                            String postId = commentMap.get("postId");
+                                                            if (postId != null) {
+                                                                goToPost(postId);
+                                                            }
+                                                        });
                                                     }
                                                 }
                                             }
@@ -171,5 +178,10 @@ public class UserProfile extends AppCompatActivity {
                 linearLayoutPosts.addView(textView);
             }
         });
+    }
+    private void goToPost(String postId) {
+        Intent intent = new Intent(this, PostPage.class);
+        intent.putExtra("postId", postId);
+        startActivity(intent);
     }
 }
