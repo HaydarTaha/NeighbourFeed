@@ -1,5 +1,7 @@
 package com.neighbourfeed;
 
+import static java.security.AccessController.getContext;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -8,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -49,6 +53,9 @@ public class PostPage extends AppCompatActivity {
         boolean isLiked = intent.getBooleanExtra("isLiked", false);
         boolean isDisliked = intent.getBooleanExtra("isDisliked", false);
         int totalVotes = intent.getIntExtra("totalVotes", 0);
+        String createdDate = intent.getStringExtra("createDate");
+        double latitude = intent.getDoubleExtra("latitude", 0);
+        double longitude = intent.getDoubleExtra("longitude", 0);
         database = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         fetchCommentsWithID(postId, post);
@@ -63,6 +70,24 @@ public class PostPage extends AppCompatActivity {
         // Set up total votes
         TextView totalLikes = findViewById(R.id.totalLikeDislikeCount);
         totalLikes.setText(String.valueOf(totalVotes));
+
+        // Set up created date
+        TextView createdDateTextView = findViewById(R.id.textCreatedAt);
+        createdDateTextView.setText(createdDate);
+
+        ImageButton mapButton = findViewById(R.id.iconOpenMap);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("QueryPermissionsNeeded")
+            @Override
+            public void onClick(View v) {
+                // Open Google Maps with marker on the location of the post
+                Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(" + post.getPostContent() + ")");
+                Log.d("Post", "Map URI: " + gmmIntentUri);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
     }
 
     @Override

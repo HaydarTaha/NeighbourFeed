@@ -2,13 +2,12 @@ package com.neighbourfeed;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,7 +16,6 @@ import androidx.annotation.Nullable;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class PostAdapter extends ArrayAdapter<Post> {
 
@@ -46,13 +44,12 @@ public class PostAdapter extends ArrayAdapter<Post> {
         ImageButton commentButton = listItemView.findViewById(R.id.iconComment);
         TextView commentCount = listItemView.findViewById(R.id.textCommentCount);
         TextView totalLikes = listItemView.findViewById(R.id.totalLikeDislikeCount);
+        ImageButton mapButton = listItemView.findViewById(R.id.iconOpenMap);
+        TextView textCreatedAt = listItemView.findViewById(R.id.textCreatedAt);
 
-        listItemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                assert currentPost != null;
-                onClickPost(currentPost);
-            }
+        listItemView.setOnClickListener(v -> {
+            assert currentPost != null;
+            onClickPost(currentPost);
         });
 
         //Set upVote and downVote icon
@@ -65,99 +62,99 @@ public class PostAdapter extends ArrayAdapter<Post> {
         commentCount.setText(String.valueOf(currentPost.getCommentCount()));
         calculateTotalVotes(currentPost, totalLikes);
 
-        upVoteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentPost.isUpVotedByUser()) {
-                    currentPost.decrementUpVoteCount();
-                    currentPost.setUpVotedByUser(false);
-                } else {
-                    if (currentPost.isDownVotedByUser()) {
-                        currentPost.incrementUpVoteCount();
-                        currentPost.decrementDownVoteCount();
-                        currentPost.setUpVotedByUser(true);
-                        currentPost.setDownVotedByUser(false);
-                    } else {
-                        currentPost.incrementUpVoteCount();
-                        currentPost.setUpVotedByUser(true);
-                    }
-                }
+        //Set createdAt text
+        textCreatedAt.setText(currentPost.getPostDate());
 
-                //Update icon both upVote and downVote
-                upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
-                downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
-
-                calculateTotalVotes(currentPost, totalLikes);
-                notifyDataSetChanged();
-
-                //Update database, add userNames to upVotedUsers array
-                String postId = currentPost.getPostId();
-                FirebaseFirestore database = FirebaseFirestore.getInstance();
-                //Get upVotedUsers array from database where postId = postId
-                database.collection("Posts").document(postId).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Get the documentSnapshot from task
-                        if (task.getResult() != null) {
-                            // Get the upVotedUsers array from documentSnapshot
-                            ArrayList<String> upVotedUsers = (ArrayList<String>) task.getResult().get("upVotedUsers");
-                            // Get downVotedUsers array from documentSnapshot to check if userName is in downVotedUsers array
-                            ArrayList<String> downVotedUsers = (ArrayList<String>) task.getResult().get("downVotedUsers");
-                            controlUpVote(upVotedUsers, downVotedUsers, database, postId);
-                        }
-                    }
-                });
-            }
-        });
-
-        downVoteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        upVoteButton.setOnClickListener(v -> {
+            if (currentPost.isUpVotedByUser()) {
+                currentPost.decrementUpVoteCount();
+                currentPost.setUpVotedByUser(false);
+            } else {
                 if (currentPost.isDownVotedByUser()) {
+                    currentPost.incrementUpVoteCount();
                     currentPost.decrementDownVoteCount();
+                    currentPost.setUpVotedByUser(true);
                     currentPost.setDownVotedByUser(false);
                 } else {
-                    if (currentPost.isUpVotedByUser()) {
-                        currentPost.incrementDownVoteCount();
-                        currentPost.decrementUpVoteCount();
-                        currentPost.setUpVotedByUser(false);
-                        currentPost.setDownVotedByUser(true);
-                    } else {
-                        currentPost.incrementDownVoteCount();
-                        currentPost.setDownVotedByUser(true);
+                    currentPost.incrementUpVoteCount();
+                    currentPost.setUpVotedByUser(true);
+                }
+            }
+
+            //Update icon both upVote and downVote
+            upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
+            downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
+
+            calculateTotalVotes(currentPost, totalLikes);
+            notifyDataSetChanged();
+
+            //Update database, add userNames to upVotedUsers array
+            String postId = currentPost.getPostId();
+            FirebaseFirestore database = FirebaseFirestore.getInstance();
+            //Get upVotedUsers array from database where postId = postId
+            database.collection("Posts").document(postId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Get the documentSnapshot from task
+                    if (task.getResult() != null) {
+                        // Get the upVotedUsers array from documentSnapshot
+                        ArrayList<String> upVotedUsers = (ArrayList<String>) task.getResult().get("upVotedUsers");
+                        // Get downVotedUsers array from documentSnapshot to check if userName is in downVotedUsers array
+                        ArrayList<String> downVotedUsers = (ArrayList<String>) task.getResult().get("downVotedUsers");
+                        controlUpVote(upVotedUsers, downVotedUsers, database, postId);
                     }
                 }
-
-                //Update icon both upVote and downVote
-                upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
-                downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
-
-                calculateTotalVotes(currentPost, totalLikes);
-                notifyDataSetChanged();
-
-                //Update database, add userNames to downVotedUsers array
-                String postId = currentPost.getPostId();
-                FirebaseFirestore database = FirebaseFirestore.getInstance();
-                //Get downVotedUsers array from database where postId = postId
-                database.collection("Posts").document(postId).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Get the documentSnapshot from task
-                        if (task.getResult() != null) {
-                            // Get the downVotedUsers array from documentSnapshot
-                            ArrayList<String> downVotedUsers = (ArrayList<String>) task.getResult().get("downVotedUsers");
-                            // Get upVotedUsers array from documentSnapshot to check if userName is in upVotedUsers array
-                            ArrayList<String> upVotedUsers = (ArrayList<String>) task.getResult().get("upVotedUsers");
-                            controlDownVote(downVotedUsers, upVotedUsers, database, postId);
-                        }
-                    }
-                });
-            }
+            });
         });
 
-        commentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCommentPage(currentPost.getPostId());
+        downVoteButton.setOnClickListener(v -> {
+            if (currentPost.isDownVotedByUser()) {
+                currentPost.decrementDownVoteCount();
+                currentPost.setDownVotedByUser(false);
+            } else {
+                if (currentPost.isUpVotedByUser()) {
+                    currentPost.incrementDownVoteCount();
+                    currentPost.decrementUpVoteCount();
+                    currentPost.setUpVotedByUser(false);
+                    currentPost.setDownVotedByUser(true);
+                } else {
+                    currentPost.incrementDownVoteCount();
+                    currentPost.setDownVotedByUser(true);
+                }
             }
+
+            //Update icon both upVote and downVote
+            upVoteButton.setImageResource(currentPost.isUpVotedByUser() ? R.drawable.arrow_up_bold : R.drawable.arrow_up_bold_outline);
+            downVoteButton.setImageResource(currentPost.isDownVotedByUser() ? R.drawable.arrow_down_bold : R.drawable.arrow_down_bold_outline);
+
+            calculateTotalVotes(currentPost, totalLikes);
+            notifyDataSetChanged();
+
+            //Update database, add userNames to downVotedUsers array
+            String postId = currentPost.getPostId();
+            FirebaseFirestore database = FirebaseFirestore.getInstance();
+            //Get downVotedUsers array from database where postId = postId
+            database.collection("Posts").document(postId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Get the documentSnapshot from task
+                    if (task.getResult() != null) {
+                        // Get the downVotedUsers array from documentSnapshot
+                        ArrayList<String> downVotedUsers = (ArrayList<String>) task.getResult().get("downVotedUsers");
+                        // Get upVotedUsers array from documentSnapshot to check if userName is in upVotedUsers array
+                        ArrayList<String> upVotedUsers = (ArrayList<String>) task.getResult().get("upVotedUsers");
+                        controlDownVote(downVotedUsers, upVotedUsers, database, postId);
+                    }
+                }
+            });
+        });
+
+        commentButton.setOnClickListener(v -> openCommentPage(currentPost.getPostId()));
+
+        mapButton.setOnClickListener(v -> {
+            // Open Google Maps with marker on the location of the post
+            Uri gmmIntentUri = Uri.parse("geo:" + currentPost.getLatitude() + "," + currentPost.getLongitude() + "?q=" + currentPost.getLatitude() + "," + currentPost.getLongitude() + "(" + currentPost.getPostContent() + ")");
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            getContext().startActivity(mapIntent);
         });
 
         return listItemView;
@@ -247,6 +244,9 @@ public class PostAdapter extends ArrayAdapter<Post> {
         intent.putExtra("isLiked", currentPost.isUpVotedByUser());
         intent.putExtra("isDisliked", currentPost.isDownVotedByUser());
         intent.putExtra("totalVotes", currentPost.getUpVoteCount() - currentPost.getDownVoteCount());
+        intent.putExtra("createDate", currentPost.getPostDate());
+        intent.putExtra("latitude", currentPost.getLatitude());
+        intent.putExtra("longitude", currentPost.getLongitude());
         getContext().startActivity(intent);
     }
 }

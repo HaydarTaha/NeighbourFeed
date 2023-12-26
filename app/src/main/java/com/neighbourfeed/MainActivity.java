@@ -24,7 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -33,6 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import android.widget.SeekBar;
 import android.view.LayoutInflater;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -303,7 +306,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Post processPostData(DocumentSnapshot document) {
         String content = document.getString("content");
-        String createDate = Objects.requireNonNull(document.getTimestamp("createDate")).toString();
+        Timestamp createDateTimestamp = document.getTimestamp("createDate");
+
+        // Convert timestamp to string with format: "dd/MM/yyyy"
+        assert createDateTimestamp != null;
+        @SuppressLint("SimpleDateFormat") String createDate = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date(createDateTimestamp.getSeconds() * 1000));
         List<String> downVotedUsers = castObjectToList(document.get("downVotedUsers"));
         String mediaPath = document.getString("mediaPath");
         String mediaType = document.getString("mediaType");
@@ -320,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
         //Calculate distance from user
         GeoPoint locationGeoPoint = document.getGeoPoint("location");
         assert locationGeoPoint != null;
+        Log.d("MainActivity", "Location: " + locationGeoPoint.getLatitude() + " " + locationGeoPoint.getLongitude());
         double distance = calculateDistanceFromUser(locationGeoPoint);
         distance = Math.round(distance * 10.0) / 10.0;
         String distanceString = Double.toString(distance) + " km";
@@ -340,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        return new Post(userName, distanceString, content, upVotes, downVotes, 0, type, upVoted, downVoted, id, mediaType, mediaPath);
+        return new Post(userName, distanceString, content, upVotes, downVotes, 0, type, upVoted, downVoted, id, mediaType, mediaPath, createDate, locationGeoPoint.getLatitude(), locationGeoPoint.getLongitude());
     }
 
     private double calculateDistanceFromUser(GeoPoint location) {

@@ -1,16 +1,18 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- User Information and User Icon -->
+    <!-- User Information, User Icon and Open Map Button -->
     <LinearLayout
+        android:id="@+id/userInfoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:gravity="start|center_vertical"
-        android:orientation="horizontal">
+        android:baselineAligned="false">
 
         <!-- User Icon -->
         <ImageButton
@@ -25,26 +27,52 @@
 
         <!-- Username and Distance -->
         <LinearLayout
+            android:id="@+id/userInfoTextLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textUsername"
+            <!-- Username and Distance Set to Start -->
+            <LinearLayout
+                android:id="@+id/usernameLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/username"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                tools:ignore="UselessParent">
+                <TextView
+                    android:id="@+id/textUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/username"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textDistance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/km"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/textCreatedAt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/created_at"
+                    android:textSize="15sp" />
+            </LinearLayout>
         </LinearLayout>
+
+        <!-- Open Map Button, Set to End -->
+        <ImageButton
+            android:id="@+id/iconOpenMap"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_map"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/open_map" />
+
+        <TextView
+            android:id="@+id/textDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/km"
+            android:textSize="15sp" />
     </LinearLayout>
 
     <!-- Post Text -->
