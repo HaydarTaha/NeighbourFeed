@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Register extends AppCompatActivity {
@@ -92,6 +93,7 @@ public class Register extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
+                                                        createUserNameInDatabase(userName, email);
                                                         Toast.makeText(Register.this, "Your account has been created", Toast.LENGTH_SHORT).show();
                                                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                         intent.putExtra("fromRegister", true);
@@ -110,5 +112,18 @@ public class Register extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    private void createUserNameInDatabase(String name, String email) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> user = Map.of(
+                "userName", name,
+                "email", email
+        );
+        // Add a new document with a random ID
+        db.collection("Users")
+                .add(user)
+                .addOnSuccessListener(documentReference -> Log.d("Register", "DocumentSnapshot added with ID: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.w("Register", "Error adding document", e));
     }
 }

@@ -266,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
+    @SuppressLint("SetTextI18n")
     private void fetchPosts(ArrayList<Post> posts) {
         TextView noPost = findViewById(R.id.postEmptyView);
         noPost.setVisibility(View.INVISIBLE);
@@ -307,6 +308,8 @@ public class MainActivity extends AppCompatActivity {
 
                             noPost.setVisibility(View.VISIBLE);
                             noPost.setText("No post yet");
+                            ProgressBar progressBar = findViewById(R.id.progressBarMain);
+                            progressBar.setVisibility(View.GONE);
                         }
                     } else {
                         Log.d("MainActivity", "Error getting documents: ", task.getException());
