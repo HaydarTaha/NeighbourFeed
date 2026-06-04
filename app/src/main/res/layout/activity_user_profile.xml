@@ -1,130 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
+    android:orientation="vertical"
+    android:background="@color/surface_bg"
     tools:context=".UserProfile">
 
-    <!-- Header -->
-
-    <TextView
-        android:id="@+id/headerTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textAppearance="@style/HeaderText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- LinearLayout for the user icon, username -->
+    <!-- App Bar -->
     <LinearLayout
-        android:id="@+id/linearLayoutUser"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="start|center_vertical"
+        android:layout_height="56dp"
+        android:background="@color/green_700"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:layout_below="@id/headerTextView">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
-        <!-- User Icon -->
-        <ImageButton
-            android:id="@+id/profileButton"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginEnd="16dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_profile"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/profile" />
-
-        <!-- Username -->
         <TextView
-            android:id="@+id/textViewUsername"
-            android:layout_width="wrap_content"
+            android:id="@+id/headerTextView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textAppearance="@style/AppBarTitle" />
     </LinearLayout>
 
+    <!-- Profile Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <ImageButton
+                android:id="@+id/profileButton"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/bg_avatar"
+                android:src="@drawable/ic_profile"
+                android:tint="@color/green_700"
+                android:scaleType="center"
+                android:contentDescription="@string/profile"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/textViewUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/username"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/neutral_900" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Tabs -->
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/toggleGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:singleSelection="true"
-        android:layout_marginTop="16dp"
-        android:layout_below="@id/linearLayoutUser">
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"
+        app:singleSelection="true">
 
         <Button
             android:id="@+id/btnPosts"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/posts"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
         <Button
             android:id="@+id/btnComments"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/comments"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
         <Button
             android:id="@+id/btnUpVotes"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/ups"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
         <Button
             android:id="@+id/btnDownVotes"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/downs"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_below="@id/btnComments"/>
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
-    <!-- This is the LinearLayout that will display the posts, user posts, user comments, user upVotes, and user downVotes -->
-    <LinearLayout
-        android:id="@+id/linearLayoutPosts"
+    <!-- Content Area -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/toggleGroup"
-        android:layout_marginTop="16dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutPosts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewHeaderUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/userLayoutTextHeader"
+                android:textAppearance="@style/HeaderText"
+                android:visibility="gone" />
+
+            <ListView
+                android:id="@+id/postListView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:listSelector="@android:color/transparent"
+                android:paddingTop="4dp"
+                android:clipToPadding="false" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBarUserProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/green_700"
+            android:visibility="gone" />
+
         <TextView
-            android:id="@+id/textViewHeaderUserProfile"
+            android:id="@+id/textViewNoPosts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/userLayoutTextHeader"
-            android:textAppearance="@style/HeaderText"
-            android:layout_marginBottom="16dp"/>
-        <ListView
-            android:id="@+id/postListView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:divider="@null"
-            android:dividerHeight="0dp" />
-    </LinearLayout>
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/neutral_500"
+            android:visibility="gone" />
+    </FrameLayout>
 
-    <!-- ProgressBar -->
-    <ProgressBar
-        android:id="@+id/progressBarUserProfile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminateTint="?android:attr/colorControlActivated"
-        android:visibility="gone" />
-
-    <!-- No post or comments text -->
-    <TextView
-        android:id="@+id/textViewNoPosts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textAppearance="@style/HeaderText"
-        android:visibility="gone" />
-</RelativeLayout>
+</LinearLayout>

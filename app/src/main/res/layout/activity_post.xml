@@ -1,164 +1,197 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    android:clickable="true"
+    android:focusable="true">
 
-    <!-- User Information, User Icon and Open Map Button -->
     <LinearLayout
-        android:id="@+id/userInfoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="start|center_vertical"
-        android:baselineAligned="false">
+        android:orientation="vertical">
 
-        <!-- User Icon -->
-        <ImageButton
-            android:id="@+id/iconUser"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginEnd="8dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_profile"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/profile" />
-
-        <!-- Username and Distance -->
+        <!-- Header: Avatar + Username + Date + Map -->
         <LinearLayout
-            android:id="@+id/userInfoTextLayout"
-            android:layout_width="0dp"
+            android:id="@+id/userInfoLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="8dp">
 
-            <!-- Username and Distance Set to Start -->
+            <!-- Avatar -->
+            <ImageButton
+                android:id="@+id/iconUser"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_avatar"
+                android:src="@drawable/ic_profile"
+                android:tint="@color/green_700"
+                android:scaleType="center"
+                android:contentDescription="@string/profile"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <!-- Username + Date -->
             <LinearLayout
-                android:id="@+id/usernameLayout"
+                android:id="@+id/userInfoTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp">
+
+                <LinearLayout
+                    android:id="@+id/usernameLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textUsername"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/username"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/neutral_900" />
+
+                    <TextView
+                        android:id="@+id/textCreatedAt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/created_at"
+                        android:textSize="12sp"
+                        android:textColor="@color/neutral_500" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Distance -->
+            <TextView
+                android:id="@+id/textDistance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                tools:ignore="UselessParent">
-                <TextView
-                    android:id="@+id/textUsername"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/username"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                android:text="@string/km"
+                android:textSize="12sp"
+                android:textColor="@color/green_500"
+                android:layout_marginEnd="8dp" />
 
-                <TextView
-                    android:id="@+id/textCreatedAt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/created_at"
-                    android:textSize="15sp" />
-            </LinearLayout>
+            <!-- Map Button -->
+            <ImageButton
+                android:id="@+id/iconOpenMap"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_map"
+                android:tint="@color/neutral_500"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/open_map" />
         </LinearLayout>
 
-        <!-- Open Map Button, Set to End -->
-        <ImageButton
-            android:id="@+id/iconOpenMap"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_map"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/open_map" />
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/neutral_200" />
 
+        <!-- Post Text -->
         <TextView
-            android:id="@+id/textDistance"
-            android:layout_width="wrap_content"
+            android:id="@+id/textPost"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/km"
-            android:textSize="15sp" />
-    </LinearLayout>
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/this_is_a_post_text"
+            android:textSize="15sp"
+            android:textColor="@color/neutral_700"
+            android:lineSpacingMultiplier="1.3" />
 
-    <!-- Post Text -->
-    <TextView
-        android:id="@+id/textPost"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/this_is_a_post_text"
-        android:textSize="24sp"
-        android:textStyle="normal" />
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/neutral_200" />
 
-    <!-- Comment, Up Vote and Down Vote -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="start|center_vertical"
-        android:baselineAligned="false">
-
-        <!-- Comment LinearLayout -->
+        <!-- Actions: Comments + Votes -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <!-- Comment Icon -->
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
+
+            <!-- Comment Group -->
             <ImageButton
                 android:id="@+id/iconComment"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:src="@drawable/ic_comment"
-                android:layout_marginEnd="8dp"
-                android:background="?android:attr/selectableItemBackground"
+                android:tint="@color/neutral_500"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/comment" />
 
-            <!-- Comment Count -->
             <TextView
                 android:id="@+id/textCommentCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/comment_count"
-                android:textSize="20sp" />
-        </LinearLayout>
+                android:textSize="14sp"
+                android:textColor="@color/neutral_500"
+                android:layout_marginStart="4dp" />
 
+            <!-- Spacer -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
-        <!-- Up Vote, Down Vote and total count LinearLayout -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end">
-
-            <!-- Total Count -->
+            <!-- Vote Score -->
             <TextView
                 android:id="@+id/totalLikeDislikeCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/total_count"
-                android:textSize="20sp"
-                android:layout_marginEnd="8dp" />
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/neutral_700"
+                android:layout_marginEnd="6dp" />
 
-            <!-- Icon LinearLayout -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <!-- Up Vote -->
+            <ImageButton
+                android:id="@+id/upVoteIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/arrow_up_bold_outline"
+                android:tint="@color/green_700"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/like" />
 
-                <!-- Up Vote Icon -->
-                <ImageButton
-                    android:id="@+id/upVoteIcon"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:src="@drawable/arrow_up_bold_outline"
-                    android:contentDescription="@string/like" />
-
-                <!-- Down Vote Icon -->
-                <ImageButton
-                    android:id="@+id/downVoteIcon"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:src="@drawable/arrow_down_bold_outline"
-                    android:contentDescription="@string/dislike" />
-            </LinearLayout>
+            <!-- Down Vote -->
+            <ImageButton
+                android:id="@+id/downVoteIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/arrow_down_bold_outline"
+                android:tint="@color/neutral_500"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/dislike" />
         </LinearLayout>
+
     </LinearLayout>
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

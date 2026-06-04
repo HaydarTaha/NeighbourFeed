@@ -1,103 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:orientation="vertical"
+    android:background="@color/surface_bg"
     tools:context=".MainActivity">
 
-    <!-- Header -->
-    <TextView
-        android:id="@+id/headerTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textAppearance="@style/HeaderText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"/>
+    <!-- App Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/green_700"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
-    <!-- Body (Post List) -->
-    <ListView
-        android:id="@+id/postListView"
-        android:layout_width="wrap_content"
-        android:layout_height="632dp"
-        android:layout_above="@id/footerLayout"
-        android:layout_below="@id/headerTextView"
-        android:divider="@null"
-        android:dividerHeight="0dp" />
+        <TextView
+            android:id="@+id/headerTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textAppearance="@style/AppBarTitle" />
+    </LinearLayout>
 
-    <!-- Progress Bar set color to colorControlActivated where in /res/values/themes.xml -->
-    <ProgressBar
-        android:id="@+id/progressBarMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminateTint="?android:attr/colorControlActivated"
-        android:visibility="gone" />
+    <!-- Content Area -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <TextView
-        android:id="@+id/postEmptyView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textAppearance="@style/HeaderText"
-        android:visibility="gone" />
-    <!-- Footer -->
+        <ListView
+            android:id="@+id/postListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:listSelector="@android:color/transparent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false" />
+
+        <TextView
+            android:id="@+id/postEmptyView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/neutral_500"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progressBarMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/green_700"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- Bottom Navigation -->
     <LinearLayout
         android:id="@+id/footerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_height="68dp"
+        android:background="@color/green_700"
+        android:elevation="8dp"
         android:orientation="horizontal">
 
-        <!-- Profile Button -->
-        <ImageButton
-            android:id="@+id/profileButton"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:background="@drawable/circle_background"
-            android:src="@drawable/ic_profile"
+        <!-- Profile -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:contentDescription="@string/profile"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:stateListAnimator="@null"
-            android:focusable="true" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="false"
+            android:focusable="false">
 
-        <!-- Filter Button -->
-        <ImageButton
-            android:id="@+id/filterButton"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:background="@drawable/circle_background"
-            android:src="@drawable/ic_filter"
+            <ImageButton
+                android:id="@+id/profileButton"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_profile"
+                android:tint="@color/white"
+                android:contentDescription="@string/profile"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile"
+                android:textAppearance="@style/NavLabel"
+                android:layout_marginTop="3dp" />
+        </LinearLayout>
+
+        <!-- Filter -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:contentDescription="@string/filter"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:stateListAnimator="@null"
-            android:focusable="true" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="false"
+            android:focusable="false">
 
-        <!-- Create Post Button -->
-        <ImageButton
-            android:id="@+id/createPostButton"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:background="@drawable/circle_background"
-            android:src="@drawable/ic_post"
+            <ImageButton
+                android:id="@+id/filterButton"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_filter"
+                android:tint="@color/white"
+                android:contentDescription="@string/filter"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter"
+                android:textAppearance="@style/NavLabel"
+                android:layout_marginTop="3dp" />
+        </LinearLayout>
+
+        <!-- Create Post -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:contentDescription="@string/create_a_new_post"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:stateListAnimator="@null"
-            android:focusable="true" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="false"
+            android:focusable="false">
 
+            <ImageButton
+                android:id="@+id/createPostButton"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_post"
+                android:tint="@color/white"
+                android:contentDescription="@string/create_a_new_post"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/new_post_label"
+                android:textAppearance="@style/NavLabel"
+                android:layout_marginTop="3dp" />
+        </LinearLayout>
 
     </LinearLayout>
 
-
-
-</RelativeLayout>
-
-
-
+</LinearLayout>

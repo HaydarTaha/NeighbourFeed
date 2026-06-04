@@ -1,46 +1,63 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="1dp">
 
-    <!-- User Information and User Icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start|center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="12dp">
 
-        <!-- User Icon -->
-        <ImageButton
-            android:id="@+id/commentUserIcon"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginEnd="16dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_profile"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/profile" />
-
-        <!-- Username -->
-        <TextView
-            android:id="@+id/commentUsername"
-            android:layout_width="wrap_content"
+        <!-- Header: Avatar + Username -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/commentUserIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_avatar"
+                android:src="@drawable/ic_profile"
+                android:tint="@color/green_700"
+                android:scaleType="center"
+                android:contentDescription="@string/profile"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <TextView
+                android:id="@+id/commentUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/username"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/neutral_900" />
+        </LinearLayout>
+
+        <!-- Comment Text (indented to align with username) -->
+        <TextView
+            android:id="@+id/commentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingStart="50dp"
+            android:text="@string/comment"
+            android:textSize="14sp"
+            android:textColor="@color/neutral_700"
+            android:lineSpacingMultiplier="1.3" />
+
     </LinearLayout>
-
-    <!-- Comment Text -->
-    <TextView
-        android:id="@+id/commentText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/comment"
-        android:textSize="24sp"
-        android:textStyle="normal" />
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
